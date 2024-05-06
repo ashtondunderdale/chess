@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
+import 'chess_tile.dart';
+
 class Board extends StatefulWidget {
-  const Board({Key? key}) : super(key: key);
+  const Board({super.key});
 
   @override
   State<Board> createState() => _BoardState();
@@ -13,8 +15,8 @@ class _BoardState extends State<Board> {
     backgroundColor: Colors.white,
     body: Center(
       child: Container(
-        width: 700,
-        height: 700,
+        width: 800,
+        height: 800,
         decoration: BoxDecoration(
           border: Border.all(color: Colors.black, width: 2)
         ),
@@ -25,9 +27,8 @@ class _BoardState extends State<Board> {
           itemBuilder: (BuildContext context, int index) {
             int row = index ~/ 8;
             int col = index % 8;
-            Color color = (row + col) % 2 == 0 ? Colors.white : Colors.black;
         
-            return Container(color: color);
+            return ChessTile(row: row, col: col);
           },
           itemCount: 64,
         ),
