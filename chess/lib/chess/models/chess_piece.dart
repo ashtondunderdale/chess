@@ -5,6 +5,9 @@ class ChessPiece {
   String name;
   String character;
 
+  // only for pawn
+  bool canMoveTwoSquares = true;
+
   ChessPiece({
     required this.color, 
     required this.character, 

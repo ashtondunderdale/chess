@@ -26,6 +26,8 @@ class ChessService {
 
   bool isValidPawnMove(ChessTile movingFrom, ChessTile movingTo) {
     
+    
+
     if (movingTo.col != movingFrom.col) {
       return false;
     }
@@ -34,6 +36,12 @@ class ChessService {
       return false;
     } 
 
+    if (!movingFrom.piece!.canMoveTwoSquares &&
+        movingFrom.row - movingTo.row >= 2) {
+      return false;
+    }
+
+    movingFrom.piece!.canMoveTwoSquares = false;
     return true;
   }
 }

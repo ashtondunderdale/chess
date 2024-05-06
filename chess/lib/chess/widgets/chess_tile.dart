@@ -26,22 +26,22 @@ class _ChessTileState extends State<ChessTile> {
   Widget build(BuildContext context) => _buildChessTile();
 
   Widget _buildChessTile() => DragTarget<ChessTile>(
-    onAcceptWithDetails: (details) =>
+    onAcceptWithDetails: (details) {
       setState(() {
-        widget.piece = details.data.piece;
-      }),
-      
-    onWillAcceptWithDetails: (details) => 
-      chess.isValidMove(details.data, widget),
+        if (chess.isValidMove(details.data, widget)) {
+          widget.piece = details.data.piece;
+          details.data.piece = null;
+        }
+      });
+    },
+    
+    onWillAcceptWithDetails: (details) => true,
 
     builder:(context, candidateData, rejectedData) => Container(
       color: (widget.row + widget.col) % 2 == 0 ? const Color.fromARGB(255, 188, 188, 188) : Color.fromARGB(255, 57, 57, 57),
       child: Center(
         child: Draggable<ChessTile>(
-          onDragCompleted: () =>
-            setState(() {
-              widget.piece = null;
-            }),
+          onDragCompleted: () => setState(() {}),
           data: widget,
           feedback: Container(
             decoration: const BoxDecoration(
