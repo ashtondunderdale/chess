@@ -38,7 +38,9 @@ class _ChessTileState extends State<ChessTile> {
     onWillAcceptWithDetails: (details) => true,
 
     builder:(context, candidateData, rejectedData) => Container(
-      color: (widget.row + widget.col) % 2 == 0 ? const Color.fromARGB(255, 188, 188, 188) : Color.fromARGB(255, 57, 57, 57),
+      color: (widget.row + widget.col) % 2 == 0 ? 
+      const Color.fromARGB(255, 188, 188, 188) : 
+      const Color.fromARGB(255, 57, 57, 57),
       child: Center(
         child: Draggable<ChessTile>(
           onDragCompleted: () => setState(() {}),

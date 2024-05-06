@@ -49,6 +49,8 @@ bool isValidPawnMove(ChessTile movingFrom, ChessTile movingTo, bool isWhiteTurn)
       return false;
     } 
 
+    //TODO: stop pawn from jumping over pieces when doing 2 moves
+
     // can move twice on first turn
     if (!movingFrom.piece!.canMoveTwoSquares &&
         ( movingFrom.row - movingTo.row).abs() >= 2) {
