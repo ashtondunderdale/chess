@@ -5,41 +5,60 @@ class ChessTile extends StatefulWidget {
 
   final int row;
   final int col;
+  late String piece;
 
   @override
   State<ChessTile> createState() => _ChessTileState();
 }
 
 class _ChessTileState extends State<ChessTile> {
-  late String piece;
 
   @override
-  Widget build(BuildContext context) => Container(
-        color: (widget.row + widget.col) % 2 == 0 ? Colors.white : Colors.black,
-        child: Center(
-          child: Draggable<ChessTile>(
-            feedback: Container(
-              decoration: BoxDecoration(
-                color: Colors.transparent, // Set the background color to transparent
-              ),
-              child: DefaultTextStyle(
-                style: TextStyle(
-                  color: (widget.row + widget.col) % 2 != 0 ? Colors.white : Colors.black,
-                  fontSize: 48,
-                ),
-                child: Text(_getInitialPiece()),
-              ),
+  void initState() {
+    super.initState();
+    widget.piece = _getInitialPiece();
+  }
+
+  @override
+  Widget build(BuildContext context) => DragTarget<ChessTile>(
+    onAcceptWithDetails: (details) {
+      setState(() {
+        widget.piece = details.data.piece;
+      });
+    },
+    builder:(context, candidateData, rejectedData) => Container(
+      color: (widget.row + widget.col) % 2 == 0 ? Colors.white : Colors.black,
+      child: Center(
+        child: Draggable<ChessTile>(
+          onDragCompleted: () {
+            setState(() {
+              widget.piece = "";
+            });
+          },
+          data: widget,
+          feedback: Container(
+            decoration: const BoxDecoration(
+              color: Colors.transparent,
             ),
             child: DefaultTextStyle(
               style: TextStyle(
                 color: (widget.row + widget.col) % 2 != 0 ? Colors.white : Colors.black,
                 fontSize: 48,
               ),
-              child: Text(_getInitialPiece()),
+              child: Text(widget.piece),
             ),
           ),
+          child: DefaultTextStyle(
+            style: TextStyle(
+              color: (widget.row + widget.col) % 2 != 0 ? Colors.white : Colors.black,
+              fontSize: 48,
+            ),
+            child: Text(widget.piece),
+          ),
         ),
-      );
+      ),
+    ),
+  );
 
   String _getInitialPiece() {
     if (widget.row == 1 || widget.row == 6) {
