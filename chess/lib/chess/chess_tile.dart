@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ChessTile extends StatefulWidget {
-  const ChessTile({Key? key, required this.row, required this.col}) : super(key: key);
+  ChessTile({Key? key, required this.row, required this.col}) : super(key: key);
 
   final int row;
   final int col;
@@ -11,15 +11,31 @@ class ChessTile extends StatefulWidget {
 }
 
 class _ChessTileState extends State<ChessTile> {
+  late String piece;
+
   @override
   Widget build(BuildContext context) => Container(
         color: (widget.row + widget.col) % 2 == 0 ? Colors.white : Colors.black,
         child: Center(
-          child: Text(
-            _getInitialPiece(),
-            style: TextStyle(
-              color: (widget.row + widget.col) % 2 != 0 ? Colors.white : Colors.black,
-              fontSize: 48,
+          child: Draggable<ChessTile>(
+            feedback: Container(
+              decoration: BoxDecoration(
+                color: Colors.transparent, // Set the background color to transparent
+              ),
+              child: DefaultTextStyle(
+                style: TextStyle(
+                  color: (widget.row + widget.col) % 2 != 0 ? Colors.white : Colors.black,
+                  fontSize: 48,
+                ),
+                child: Text(_getInitialPiece()),
+              ),
+            ),
+            child: DefaultTextStyle(
+              style: TextStyle(
+                color: (widget.row + widget.col) % 2 != 0 ? Colors.white : Colors.black,
+                fontSize: 48,
+              ),
+              child: Text(_getInitialPiece()),
             ),
           ),
         ),
