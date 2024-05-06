@@ -1,4 +1,5 @@
-import 'package:chess/chess/piece_model.dart';
+import 'package:chess/chess/services/chess.dart';
+import 'package:chess/chess/models/chess_piece.dart';
 import 'package:flutter/material.dart';
 
 class ChessTile extends StatefulWidget {
@@ -13,6 +14,7 @@ class ChessTile extends StatefulWidget {
 }
 
 class _ChessTileState extends State<ChessTile> {
+  ChessService chess = ChessService();
 
   @override
   void initState() {
@@ -21,40 +23,25 @@ class _ChessTileState extends State<ChessTile> {
   }
 
   @override
-  Widget build(BuildContext context) => DragTarget<ChessTile>(
-    onAcceptWithDetails: (details) {
+  Widget build(BuildContext context) => _buildChessTile();
+
+  Widget _buildChessTile() => DragTarget<ChessTile>(
+    onAcceptWithDetails: (details) =>
       setState(() {
         widget.piece = details.data.piece;
-      });
-    },
-    onWillAcceptWithDetails: (details) {
-      var data = details.data;
+      }),
+      
+    onWillAcceptWithDetails: (details) => 
+      chess.isValidMove(details.data, widget),
 
-      if (data.col == widget.col && data.row == widget.row) {
-        return false;
-      }
-
-      if (widget.piece == null) {
-        return true;
-      }
-
-      if (data.piece!.color == widget.piece!.color) {
-        return false;
-      }
-
-      return true;
-    },
     builder:(context, candidateData, rejectedData) => Container(
-      color: (widget.row + widget.col) % 2 == 0 ? const Color.fromARGB(255, 188, 188, 188) : const Color.fromARGB(255, 33, 33, 33),
+      color: (widget.row + widget.col) % 2 == 0 ? const Color.fromARGB(255, 188, 188, 188) : Color.fromARGB(255, 57, 57, 57),
       child: Center(
         child: Draggable<ChessTile>(
-          onDragCompleted: () {
+          onDragCompleted: () =>
             setState(() {
-              if (true) {
-                widget.piece = null;
-              }
-            });
-          },
+              widget.piece = null;
+            }),
           data: widget,
           feedback: Container(
             decoration: const BoxDecoration(
@@ -108,5 +95,4 @@ class _ChessTileState extends State<ChessTile> {
 
     return null;
   }
-
 }

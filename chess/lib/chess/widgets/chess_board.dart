@@ -2,23 +2,18 @@ import 'package:flutter/material.dart';
 
 import 'chess_tile.dart';
 
-class Board extends StatefulWidget {
-  const Board({super.key});
+class ChessBoard extends StatelessWidget {
+  const ChessBoard({super.key});
 
   final double boardSize = 600;
 
-  @override
-  State<Board> createState() => _BoardState();
-}
-
-class _BoardState extends State<Board> {
   @override
   Widget build(BuildContext context) => Scaffold(
     backgroundColor: Colors.white,
     body: Center(
       child: Container(
-        width: widget.boardSize,
-        height: widget.boardSize,
+        width: boardSize,
+        height: boardSize,
         decoration: BoxDecoration(
           border: Border.all(color: Colors.black, width: 2)
         ),

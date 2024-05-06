@@ -1,4 +1,4 @@
-import 'package:chess/chess/board.dart';
+import 'package:chess/chess/widgets/chess_board.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -11,7 +11,8 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: Board(),
+      debugShowCheckedModeBanner: false,
+      home: ChessBoard(),
     );
   }
 }
