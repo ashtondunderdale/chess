@@ -1,13 +1,14 @@
 import 'dart:math';
 
 import 'package:chess/chess/widgets/chess_tile.dart';
+import 'package:flutter/material.dart';
 
 class ChessService {
 
   bool isValidMove(ChessTile movingFrom, ChessTile movingTo) {
           
       if (movingFrom.piece!.character == "P") {
-        if (!isValidPawnMove(movingFrom, movingTo)) {
+        if (!isValidPawnMove(movingFrom, movingTo, movingFrom.piece!.color == Colors.white)) {
           return false;
         }
       }
@@ -25,35 +26,37 @@ class ChessService {
       return true;
   }
 
-  bool isValidPawnMove(ChessTile movingFrom, ChessTile movingTo) {
-
+bool isValidPawnMove(ChessTile movingFrom, ChessTile movingTo, bool isWhiteTurn) {
+    int direction = isWhiteTurn ? 1 : -1; 
+    
     // pawn capture
-    if (movingTo.row + 1 == movingFrom.row && 
+    if (movingTo.row - movingFrom.row == direction && 
         (movingTo.col + 1 == movingFrom.col || movingTo.col - 1 == movingFrom.col)){
       
-      if (movingTo.piece == null) {
-        return false;
-      } 
-
-      return true;
+      return movingTo.piece != null;
     }
-    
-    // can only move up
-    if (movingTo.col != movingFrom.col) {
+
+    // can only move forward
+    if (movingTo.col != movingFrom.col || movingTo.row - movingFrom.row != direction && !movingFrom.piece!.canMoveTwoSquares) {
       return false;
     }
 
-    // can move twice on first turn
-    if (movingFrom.row - movingTo.row > 2) {
+    if (movingTo.piece != null) {
+      return false;
+    }
+
+    if ((movingFrom.row - movingTo.row).abs() > 2) {
       return false;
     } 
-
+    
+    // can move twice on first turn
     if (!movingFrom.piece!.canMoveTwoSquares &&
-        movingFrom.row - movingTo.row >= 2) {
+        (movingFrom.row - movingTo.row).abs() >= 2) {
       return false;
     }
-
+    
     movingFrom.piece!.canMoveTwoSquares = false;
     return true;
-  }
+}
+
 }
