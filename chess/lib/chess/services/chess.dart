@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:chess/chess/widgets/chess_tile.dart';
 import 'package:flutter/material.dart';
 
@@ -27,7 +25,7 @@ class ChessService {
   }
 
 bool isValidPawnMove(ChessTile movingFrom, ChessTile movingTo, bool isWhiteTurn) {
-    int direction = isWhiteTurn ? 1 : -1; 
+  int direction = isWhiteTurn ? 1 : -1; 
     
     // pawn capture
     if (movingTo.row - movingFrom.row == direction && 
@@ -41,22 +39,23 @@ bool isValidPawnMove(ChessTile movingFrom, ChessTile movingTo, bool isWhiteTurn)
       return false;
     }
 
+    // tile is occupied
     if (movingTo.piece != null) {
       return false;
     }
 
+    // out of range in column
     if ((movingFrom.row - movingTo.row).abs() > 2) {
       return false;
     } 
-    
+
     // can move twice on first turn
     if (!movingFrom.piece!.canMoveTwoSquares &&
-        (movingFrom.row - movingTo.row).abs() >= 2) {
+        ( movingFrom.row - movingTo.row).abs() >= 2) {
       return false;
     }
     
     movingFrom.piece!.canMoveTwoSquares = false;
     return true;
-}
-
+  }
 }

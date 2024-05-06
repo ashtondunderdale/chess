@@ -68,29 +68,56 @@ class _ChessTileState extends State<ChessTile> {
   );
 
   ChessPiece? _getInitialPiece() {
+    var color = widget.row < 2 ? Colors.white : Colors.black;
+
     if (widget.row == 1 || widget.row == 6) {
-      return ChessPiece(character: "P", name: "Pawn", color: widget.row == 1 ? Colors.white : Colors.black);
+      return ChessPiece(
+        character: "P", name: "Pawn", 
+        color: color,
+        worth: 1
+      );
+
     } else if ((widget.row == 0 && widget.col == 0) ||
         (widget.row == 0 && widget.col == 7) ||
         (widget.row == 7 && widget.col == 0) ||
         (widget.row == 7 && widget.col == 7)) {
-      return ChessPiece(character: "R", name: "Rook", color: widget.row == 0 ? Colors.white : Colors.black);
+      return ChessPiece(
+        character: "R", name: "Rook", 
+        color: color,
+        worth: 5
+      );
+
     } else if ((widget.row == 0 && widget.col == 1) ||
         (widget.row == 0 && widget.col == 6) ||
         (widget.row == 7 && widget.col == 1) ||
         (widget.row == 7 && widget.col == 6)) {
-      return ChessPiece(character: "N", name: "Knight", color: widget.row == 0 ? Colors.white : Colors.black);
+      return ChessPiece(
+        character: "N", name: "Knight", 
+        color: color,
+        worth: 3);
+
     } else if ((widget.row == 0 && widget.col == 2) ||
         (widget.row == 0 && widget.col == 5) ||
         (widget.row == 7 && widget.col == 2) ||
         (widget.row == 7 && widget.col == 5)) {
-      return ChessPiece(character: "B", name: "Bishop", color: widget.row == 0 ? Colors.white : Colors.black);
+      return ChessPiece(
+        character: "B", name: "Bishop", 
+        color: color,
+        worth: 3);
+
     } else if ((widget.row == 0 && widget.col == 3) ||
         (widget.row == 7 && widget.col == 3)) {
-      return ChessPiece(character: "Q", name: "Queen", color: widget.row == 0 ? Colors.white : Colors.black);
+      return ChessPiece(
+        character: "Q", name: "Queen", 
+        color: color,
+        worth: 9);
+
     } else if ((widget.row == 0 && widget.col == 4) ||
         (widget.row == 7 && widget.col == 4)) {
-      return ChessPiece(character: "K", name: "King", color: widget.row == 0 ? Colors.white : Colors.black);
+      return ChessPiece(
+        character: "K", name: "King", 
+        color: color,
+        worth: 0);
     }
 
     return null;
