@@ -27,13 +27,32 @@ class _ChessTileState extends State<ChessTile> {
         widget.piece = details.data.piece;
       });
     },
+    onWillAcceptWithDetails: (details) {
+      var data = details.data;
+
+      if (data.col == widget.col && data.row == widget.row) {
+        return false;
+      }
+
+      if (widget.piece == null) {
+        return true;
+      }
+
+      if (data.piece!.color == widget.piece!.color) {
+        return false;
+      }
+
+      return true;
+    },
     builder:(context, candidateData, rejectedData) => Container(
       color: (widget.row + widget.col) % 2 == 0 ? const Color.fromARGB(255, 188, 188, 188) : const Color.fromARGB(255, 33, 33, 33),
       child: Center(
         child: Draggable<ChessTile>(
           onDragCompleted: () {
             setState(() {
-              widget.piece = null;
+              if (true) {
+                widget.piece = null;
+              }
             });
           },
           data: widget,
@@ -44,7 +63,7 @@ class _ChessTileState extends State<ChessTile> {
             child: DefaultTextStyle(
               style: TextStyle(
               color: widget.piece?.color,
-                fontSize: 48,
+                fontSize: 32,
               ),
             child: Text(widget.piece?.character ?? ""),
             ),
@@ -52,7 +71,7 @@ class _ChessTileState extends State<ChessTile> {
           child: DefaultTextStyle(
             style: TextStyle(
               color: widget.piece?.color,
-              fontSize: 48,
+              fontSize: 32,
             ),
             child: Text(widget.piece?.character ?? ""),
           ),
