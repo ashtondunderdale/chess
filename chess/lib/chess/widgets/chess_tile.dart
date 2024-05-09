@@ -1,5 +1,6 @@
 import 'package:chess/chess/services/chess.dart';
 import 'package:chess/chess/models/chess_piece.dart';
+import 'package:chess/constants.dart';
 import 'package:flutter/material.dart';
 
 class ChessTile extends StatefulWidget {
@@ -14,7 +15,7 @@ class ChessTile extends StatefulWidget {
 }
 
 class _ChessTileState extends State<ChessTile> {
-  ChessService chess = ChessService();
+  final ChessService _chess = ChessService();
 
   @override
   void initState() {
@@ -28,7 +29,7 @@ class _ChessTileState extends State<ChessTile> {
   Widget _buildChessTile() => DragTarget<ChessTile>(
     onAcceptWithDetails: (details) {
       setState(() {
-        if (chess.isValidMove(details.data, widget)) {
+        if (_chess.isValidMove(details.data, widget)) {
           widget.piece = details.data.piece;
           details.data.piece = null;
         }
@@ -52,7 +53,7 @@ class _ChessTileState extends State<ChessTile> {
             child: DefaultTextStyle(
               style: TextStyle(
               color: widget.piece?.color,
-                fontSize: 32,
+                fontSize: defaultFontSize,
               ),
             child: Text(widget.piece?.character ?? ""),
             ),
@@ -60,7 +61,7 @@ class _ChessTileState extends State<ChessTile> {
           child: DefaultTextStyle(
             style: TextStyle(
               color: widget.piece?.color,
-              fontSize: 32,
+              fontSize: defaultFontSize,
             ),
             child: Text(widget.piece?.character ?? ""),
           ),
@@ -76,7 +77,7 @@ class _ChessTileState extends State<ChessTile> {
       return ChessPiece(
         character: "P", name: "Pawn", 
         color: color,
-        worth: 1
+        worth: pawnWorth
       );
 
     } else if ((widget.row == 0 && widget.col == 0) ||
@@ -86,7 +87,7 @@ class _ChessTileState extends State<ChessTile> {
       return ChessPiece(
         character: "R", name: "Rook", 
         color: color,
-        worth: 5
+        worth: rookWorth
       );
 
     } else if ((widget.row == 0 && widget.col == 1) ||
@@ -96,7 +97,8 @@ class _ChessTileState extends State<ChessTile> {
       return ChessPiece(
         character: "N", name: "Knight", 
         color: color,
-        worth: 3);
+        worth: knightWorth
+      );
 
     } else if ((widget.row == 0 && widget.col == 2) ||
         (widget.row == 0 && widget.col == 5) ||
@@ -105,21 +107,24 @@ class _ChessTileState extends State<ChessTile> {
       return ChessPiece(
         character: "B", name: "Bishop", 
         color: color,
-        worth: 3);
+        worth: bishopWorth
+      );
 
     } else if ((widget.row == 0 && widget.col == 3) ||
         (widget.row == 7 && widget.col == 3)) {
       return ChessPiece(
         character: "Q", name: "Queen", 
         color: color,
-        worth: 9);
+        worth: queenWorth
+      );
 
     } else if ((widget.row == 0 && widget.col == 4) ||
         (widget.row == 7 && widget.col == 4)) {
       return ChessPiece(
         character: "K", name: "King", 
         color: color,
-        worth: 0);
+        worth: kingWorth
+      );
     }
 
     return null;

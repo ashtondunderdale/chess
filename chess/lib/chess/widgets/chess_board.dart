@@ -1,11 +1,10 @@
+import 'package:chess/constants.dart';
 import 'package:flutter/material.dart';
 
 import 'chess_tile.dart';
 
 class ChessBoard extends StatelessWidget {
   const ChessBoard({super.key});
-
-  final double boardSize = 600;
 
   @override
   Widget build(BuildContext context) => Scaffold(
