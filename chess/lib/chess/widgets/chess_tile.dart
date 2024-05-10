@@ -4,11 +4,18 @@ import 'package:chess/constants.dart';
 import 'package:flutter/material.dart';
 
 class ChessTile extends StatefulWidget {
-  ChessTile({Key? key, required this.row, required this.col}) : super(key: key);
+  ChessTile({
+    Key? key, 
+    required this.row, 
+    required this.col,
+    required this.onPieceCaptured
+  }) : super(key: key);
 
   final int row;
   final int col;
   late ChessPiece? piece;
+
+  final Function(ChessPiece) onPieceCaptured;
 
   @override
   State<ChessTile> createState() => _ChessTileState();
@@ -27,11 +34,14 @@ class _ChessTileState extends State<ChessTile> {
   Widget build(BuildContext context) => _buildChessTile();
 
   Widget _buildChessTile() => DragTarget<ChessTile>(
-    onAcceptWithDetails: (details) {
+    onAcceptWithDetails: (movingTo) {
       setState(() {
-        if (_chess.isValidMove(details.data, widget)) {
-          widget.piece = details.data.piece;
-          details.data.piece = null;
+        if (_chess.isValidMove(movingTo.data, widget)) {
+          if (movingTo.data.piece != null) {
+            widget.onPieceCaptured(movingTo.data.piece!);
+          }
+          widget.piece = movingTo.data.piece;
+          movingTo.data.piece = null;
         }
       });
     },

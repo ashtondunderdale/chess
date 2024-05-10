@@ -24,8 +24,8 @@ class ChessService {
       return true;
   }
 
-bool isValidPawnMove(ChessTile movingFrom, ChessTile movingTo, bool isWhiteTurn) {
-  int direction = isWhiteTurn ? 1 : -1; 
+  bool isValidPawnMove(ChessTile movingFrom, ChessTile movingTo, bool isWhiteTurn) {
+    int direction = isWhiteTurn ? 1 : -1; 
     
     // pawn capture
     if (movingTo.row - movingFrom.row == direction && 
@@ -60,4 +60,12 @@ bool isValidPawnMove(ChessTile movingFrom, ChessTile movingTo, bool isWhiteTurn)
     movingFrom.piece!.canMoveTwoSquares = false;
     return true;
   }
+
+  bool isValidKnightMove() {
+    
+
+    return false;
+  }
+
 }
+
