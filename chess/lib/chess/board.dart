@@ -17,6 +17,8 @@ class _ChessBoardState extends State<ChessBoard> {
 
   ChessPiece? selectedPiece;
 
+  bool isWhiteMove = true;
+
   @override
   void initState() {
     super.initState();
@@ -96,6 +98,15 @@ class _ChessBoardState extends State<ChessBoard> {
                       return true;
                     },
                     onAcceptWithDetails: (movedPiece) {
+
+                      if (isWhiteMove && movedPiece.data.color != Colors.white) {
+                        return;
+                      } else if (!isWhiteMove && movedPiece.data.color != Colors.black) {
+                        return;
+                      }
+
+                      isWhiteMove = !isWhiteMove;
+
                       setState(() {
                         boardState[movedPiece.data.row][movedPiece.data.column] = null;
                         
@@ -120,7 +131,7 @@ class _ChessBoardState extends State<ChessBoard> {
                     },
                     builder: (context, candidateData, rejectedData) => Container(
                       decoration: BoxDecoration(
-                        color: piece == selectedPiece && selectedPiece != null ? const Color.fromARGB(255, 142, 142, 142) : isWhite ? lightSquareColor : darkSquareColor,
+                        color: piece == selectedPiece && selectedPiece != null ? selectedPieceColor : isWhite ? lightSquareColor : darkSquareColor,
                       ),
                       child: piece != null ? _buildDraggablePiece(piece) : null,
                     ),
