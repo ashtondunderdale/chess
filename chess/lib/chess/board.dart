@@ -96,6 +96,11 @@ class _ChessBoardState extends State<ChessBoard> {
                     setState(() {
                       selectedPieceValidMoves = [];
                       selectedPiece = piece;
+
+                      if (selectedPiece == null) {
+                        return;
+                      }
+
                       if (selectedPiece!.type == PieceType.pawn) {
                         selectedPieceValidMoves = _engine.getValidPawnMoves(selectedPiece!, boardState);
                       }
@@ -114,7 +119,7 @@ class _ChessBoardState extends State<ChessBoard> {
                     },
                     onAcceptWithDetails: (movedPiece) {
                       selectedPieceValidMoves = [];
-                      
+
                       if (!_engine.isValidMove(movedPiece.data, row, column, boardState)) {
                         return;
                       }
@@ -124,6 +129,7 @@ class _ChessBoardState extends State<ChessBoard> {
                       }
 
                       isWhiteMove = !isWhiteMove;
+                      print(isWhiteMove);
 
                       ChessPiece? capturedPieceOrNull = _engine.makeMove(movedPiece.data, row, column, boardState);
                       tryCapturePiece(capturedPieceOrNull);
@@ -157,7 +163,6 @@ class _ChessBoardState extends State<ChessBoard> {
   Widget _buildSquare(int row, int column, ChessPiece? piece, bool isWhiteSquare) {
     bool isValidMove = selectedPieceValidMoves.any((move) => move[0] == row && move[1] == column);
 
-
     Color squareColor;
     if (piece == selectedPiece && selectedPiece != null) {
       squareColor = selectedPieceColor;
@@ -168,9 +173,7 @@ class _ChessBoardState extends State<ChessBoard> {
     }
 
     return Container(
-      decoration: BoxDecoration(
-        color: squareColor,
-      ),
+      decoration: BoxDecoration(color: squareColor),
       child: piece != null ? _buildDraggablePiece(piece) : null,
     );
   }

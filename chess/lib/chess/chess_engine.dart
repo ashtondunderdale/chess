@@ -62,27 +62,60 @@ class ChessEngine {
 
     List<List<int>> validMoves = [];
 
-    for (var row = 0; row < 8; row++) {
-      for (var column = 0; column < 8; column++) {
-        //var square = boardState[row][column];
+    if (color == Colors.white) {
+      for (var row = 0; row < 8; row++) {
+        for (var column = 0; column < 8; column++) { 
 
-        var move = [row, column];
+          // this is a bit messy, but i think it covers all cases
 
-        if (column != currentColumn) {
-          continue;
+          if (column != currentColumn) {
+            continue;
+          }
+
+          if (row > currentRow || row < currentRow - 1 && currentRow != 6) {
+            continue;
+          }
+
+          if (row > currentRow || row < currentRow - 2) {
+            continue;
+          }          
+          
+          if (column > 0 && row == currentRow - 1 && boardState[row][column - 1] != null && boardState[row][column - 1]!.color != color) {
+            validMoves.add([row, column - 1]);
+          }
+          if (column < 7 && row == currentRow - 1 && boardState[row][column + 1] != null && boardState[row][column + 1]!.color != color) {
+            validMoves.add([row, column + 1]);
+          }
+
+          if (boardState[currentRow - 1][currentColumn] != null) {
+            continue;
+          }
+
+          if (boardState[row][column] != null) {
+            continue;
+          }
+
+          validMoves.add([row, column]);
         }
+      }
+    } else {
+      for (var row = 0; row < 8; row++) {
+        for (var column = 0; column < 8; column++) {
+          
+          if (column != currentColumn) {
+            continue;
+          }
 
-        if (row > currentRow || row < currentRow - 1 && currentRow != 6) {
-          continue;
+          if (row < currentRow || row > currentRow + 1 && currentRow != 1) {
+            continue;
+          }
+
+          if (row < currentRow || row > currentRow + 2 && currentRow == 1) {
+            continue;
+          }
+
+          validMoves.add([row, column]);
         }
-
-        if (row > currentRow || row < currentRow - 2 && currentRow == 6) {
-          continue;
-        }
-
-
-
-        validMoves.add(move);
       }
     }
 
