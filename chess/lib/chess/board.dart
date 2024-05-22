@@ -106,7 +106,7 @@ class _ChessBoardState extends State<ChessBoard> {
                       if (selectedPiece == null) {
                         return;
                       }
-                      
+
                       if (selectedPiece!.type == PieceType.pawn) {
                         selectedPieceValidMoves = _engine.getValidPawnMoves(selectedPiece!, boardState);
                       } else if (selectedPiece!.type == PieceType.knight) {
@@ -150,7 +150,6 @@ class _ChessBoardState extends State<ChessBoard> {
                       tryCapturePiece(capturedPieceOrNull);
 
                       colorInCheck = _engine.isInCheck(boardState);
-                      print(colorInCheck);
 
                       setState(() {});
                     },
@@ -184,15 +183,24 @@ class _ChessBoardState extends State<ChessBoard> {
     Color squareColor;
     if (piece == selectedPiece && selectedPiece != null) {
       squareColor = selectedPieceColor;
-    } else if (isValidMove) {
-      squareColor = selectedPieceValidMoveColor;
     } else {
       squareColor = isWhiteSquare ? lightSquareColor : darkSquareColor;
     }
 
     return Container(
       decoration: BoxDecoration(color: squareColor),
-      child: piece != null ? _buildDraggablePiece(piece) : null,
+      child: piece != null ? _buildDraggablePiece(piece) : isValidMove ? 
+        Center(
+          child: Container(
+            width: 20,
+            height: 20,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(24),
+              color: selectedPieceValidMoveColor
+            ),
+          ),
+        ) 
+        : null,
     );
   }
 
