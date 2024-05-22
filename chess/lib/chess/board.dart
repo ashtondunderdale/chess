@@ -104,7 +104,18 @@ class _ChessBoardState extends State<ChessBoard> {
                   
                         var capturedPiece = boardState[row][column];
                         boardState[row][column] = movedPiece.data;
-
+                  
+                        if (capturedPiece == null) {
+                          return;
+                        }
+                  
+                        if (capturedPiece.color == Colors.white) {
+                          capturedLightPieces.add(capturedPiece);
+                        } else {
+                          capturedDarkPieces.add(capturedPiece);
+                        }
+                  
+                        setState(() {});
                       });
                     },
                     builder: (context, candidateData, rejectedData) => Container(
