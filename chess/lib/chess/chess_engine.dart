@@ -13,6 +13,18 @@ class ChessEngine {
 
     return true;
   }
+
+  static ChessPiece? makeMove(ChessPiece movedPiece, int row, int column, List<List<ChessPiece?>> boardState) {
+    boardState[movedPiece.row][movedPiece.column] = null;
+    
+    movedPiece.row = row;
+    movedPiece.column = column;
+
+    var capturedPiece = boardState[row][column];
+    boardState[row][column] = movedPiece;
+
+    return capturedPiece;
+  }
   
   static bool isValidMove(ChessPiece piece, int destinationRow, int destinationColumn, List<List<ChessPiece?>> boardState) {
     switch (piece.type) {
