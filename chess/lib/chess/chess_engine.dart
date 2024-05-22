@@ -289,4 +289,52 @@ class ChessEngine {
     
     return validMoves;
   }
+
+  bool isInCheck(List<List<ChessPiece?>> boardState, Color color) {
+    int? kingRow;
+    int? kingColumn;
+
+    for (var i = 0; i < 8; i++) {
+      for (var j = 0; j < 8; j++) {
+        if (boardState[i][j]?.type == PieceType.king && boardState[i][j]?.color == color) {
+          kingRow = i;
+          kingColumn = j;
+        }
+      }
+    }
+
+    //print(kingRow.toString() + kingColumn.toString());
+
+    for (var i = 0; i < 8; i++) {
+      for (var j = 0; j < 8; j++) {
+        
+        if (boardState[i][j] == null) {
+          continue;
+        }
+
+        var piece = boardState[i][j]!;
+        var validMoves = [];
+
+        if (piece.type == PieceType.pawn) {
+          validMoves = getValidPawnMoves(piece, boardState);
+        } else if (piece.type == PieceType.knight) {
+          validMoves = getValidKnightMoves(piece, boardState);
+        } else if (piece.type == PieceType.bishop) {
+          validMoves = getValidBishopMoves(piece, boardState);
+        } else if (piece.type == PieceType.rook) {
+          validMoves = getValidRookMoves(piece, boardState);
+        } else if (piece.type == PieceType.queen) {
+          validMoves = getValidQueenMoves(piece, boardState);
+        } else if (piece.type == PieceType.king) {
+          validMoves = getValidKingMoves(piece, boardState);
+        }
+
+        if (validMoves.contains([kingRow, kingColumn])) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
 }

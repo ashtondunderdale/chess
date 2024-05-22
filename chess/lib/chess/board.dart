@@ -143,6 +143,12 @@ class _ChessBoardState extends State<ChessBoard> {
                       ChessPiece? capturedPieceOrNull = _engine.makeMove(movedPiece.data, row, column, boardState);
                       tryCapturePiece(capturedPieceOrNull);
 
+                      bool isblackInCheck = _engine.isInCheck(boardState, Colors.black);
+                      print(isblackInCheck);
+
+                      bool isWhiteInCheck = _engine.isInCheck(boardState, Colors.white);
+                      print(isWhiteInCheck);
+
                       setState(() {});
                     },
                     builder: (context, candidateData, rejectedData) => _buildSquare(row, column, piece, isWhiteSquare),
