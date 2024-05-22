@@ -22,6 +22,7 @@ class _ChessBoardState extends State<ChessBoard> {
   List<List<int>> selectedPieceValidMoves = [];
 
   bool isWhiteMove = true;
+  Color? colorInCheck;
 
   @override
   void initState() {
@@ -143,11 +144,12 @@ class _ChessBoardState extends State<ChessBoard> {
                       ChessPiece? capturedPieceOrNull = _engine.makeMove(movedPiece.data, row, column, boardState);
                       tryCapturePiece(capturedPieceOrNull);
 
-                      bool isblackInCheck = _engine.isInCheck(boardState, Colors.black);
-                      print(isblackInCheck);
+                      colorInCheck = _engine.isInCheck(boardState);
 
-                      bool isWhiteInCheck = _engine.isInCheck(boardState, Colors.white);
-                      print(isWhiteInCheck);
+                      if (colorInCheck != null) {
+                        
+                      }
+
 
                       setState(() {});
                     },

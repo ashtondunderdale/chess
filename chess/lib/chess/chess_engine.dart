@@ -290,51 +290,77 @@ class ChessEngine {
     return validMoves;
   }
 
-  bool isInCheck(List<List<ChessPiece?>> boardState, Color color) {
-    int? kingRow;
-    int? kingColumn;
+  Color? isInCheck(List<List<ChessPiece?>> boardState) {
+  int? whiteKingRow;
+  int? whiteKingColumn;
+  int? blackKingRow;
+  int? blackKingColumn;
 
-    for (var i = 0; i < 8; i++) {
-      for (var j = 0; j < 8; j++) {
-        if (boardState[i][j]?.type == PieceType.king && boardState[i][j]?.color == color) {
-          kingRow = i;
-          kingColumn = j;
+  for (var i = 0; i < 8; i++) {
+    for (var j = 0; j < 8; j++) {
+      if (boardState[i][j]?.type == PieceType.king) {
+        if (boardState[i][j]?.color == Colors.white) {
+          whiteKingRow = i;
+          whiteKingColumn = j;
+        } else if (boardState[i][j]?.color == Colors.black) {
+          blackKingRow = i;
+          blackKingColumn = j;
         }
       }
     }
+  }
 
-    //print(kingRow.toString() + kingColumn.toString());
-
+  bool isKingInCheck(int kingRow, int kingColumn, Color color) {
     for (var i = 0; i < 8; i++) {
       for (var j = 0; j < 8; j++) {
-        
-        if (boardState[i][j] == null) {
+        var piece = boardState[i][j];
+
+        if (piece == null || piece.color == color) {
           continue;
         }
 
-        var piece = boardState[i][j]!;
-        var validMoves = [];
+        List<List<int>> validMoves = [];
 
-        if (piece.type == PieceType.pawn) {
-          validMoves = getValidPawnMoves(piece, boardState);
-        } else if (piece.type == PieceType.knight) {
-          validMoves = getValidKnightMoves(piece, boardState);
-        } else if (piece.type == PieceType.bishop) {
-          validMoves = getValidBishopMoves(piece, boardState);
-        } else if (piece.type == PieceType.rook) {
-          validMoves = getValidRookMoves(piece, boardState);
-        } else if (piece.type == PieceType.queen) {
-          validMoves = getValidQueenMoves(piece, boardState);
-        } else if (piece.type == PieceType.king) {
-          validMoves = getValidKingMoves(piece, boardState);
+        switch (piece.type) {
+          case PieceType.pawn:
+            validMoves = getValidPawnMoves(piece, boardState);
+            break;
+          case PieceType.knight:
+            validMoves = getValidKnightMoves(piece, boardState);
+            break;
+          case PieceType.bishop:
+            validMoves = getValidBishopMoves(piece, boardState);
+            break;
+          case PieceType.rook:
+            validMoves = getValidRookMoves(piece, boardState);
+            break;
+          case PieceType.queen:
+            validMoves = getValidQueenMoves(piece, boardState);
+            break;
+          case PieceType.king:
+            validMoves = getValidKingMoves(piece, boardState);
+            break;
         }
 
-        if (validMoves.contains([kingRow, kingColumn])) {
-          return true;
+        for (var move in validMoves) {
+          if (move[0] == kingRow && move[1] == kingColumn) {
+            return true;
+          }
         }
       }
     }
-
     return false;
   }
+
+  if (whiteKingRow != null && whiteKingColumn != null && isKingInCheck(whiteKingRow, whiteKingColumn, Colors.white)) {
+    return Colors.white;
+  }
+
+  if (blackKingRow != null && blackKingColumn != null && isKingInCheck(blackKingRow, blackKingColumn, Colors.black)) {
+    return Colors.black;
+  }
+
+  return null;
+}
+
 }
