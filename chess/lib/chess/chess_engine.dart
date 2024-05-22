@@ -30,15 +30,12 @@ class ChessEngine {
     switch (piece.type) {
       case PieceType.pawn:
         return isValidPawnMove(piece, destinationRow, destinationColumn, boardState);
-
-      default:
-        return false;
         
       // case PieceType.rook:
       //   return isValidRookMove(piece, destinationRow, destinationColumn, boardState);
 
-      // case PieceType.knight:
-      //   return isValidKnightMove(piece, destinationRow, destinationColumn, boardState);
+      case PieceType.knight:
+        return isValidKnightMove(piece, destinationRow, destinationColumn, boardState);
 
       // case PieceType.bishop:
       //   return isValidBishopMove(piece, destinationRow, destinationColumn, boardState);
@@ -48,11 +45,18 @@ class ChessEngine {
 
       // case PieceType.king:
       //   return isValidKingMove(piece, destinationRow, destinationColumn, boardState);
+
+      default:
+        return false;
     }
   }
 
   bool isValidPawnMove(ChessPiece piece, int destinationRow, int destinationColumn, List<List<ChessPiece?>> boardState) {
     return getValidPawnMoves(piece, boardState).any((move) => move[0] == destinationRow && move[1] == destinationColumn);
+  }
+  
+  bool isValidKnightMove(ChessPiece piece, int destinationRow, int destinationColumn, List<List<ChessPiece?>> boardState) {
+    return getValidKnightMove(piece, boardState).any((move) => move[0] == destinationRow && move[1] == destinationColumn);
   }
 
   List<List<int>> getValidPawnMoves(ChessPiece piece, List<List<ChessPiece?>> boardState) {
@@ -65,9 +69,6 @@ class ChessEngine {
     if (color == Colors.white) {
       for (var row = 0; row < 8; row++) {
         for (var column = 0; column < 8; column++) { 
-
-          // this is a bit messy, but i think it covers all cases
-
           if (column != currentColumn) {
             continue;
           }
@@ -101,7 +102,6 @@ class ChessEngine {
     } else {
       for (var row = 0; row < 8; row++) {
         for (var column = 0; column < 8; column++) {
-          
           if (column != currentColumn) {
             continue;
           }
@@ -110,7 +110,22 @@ class ChessEngine {
             continue;
           }
 
-          if (row < currentRow || row > currentRow + 2 && currentRow == 1) {
+          if (row < currentRow || row > currentRow + 2) {
+            continue;
+          }        
+          
+          if (column > 0 && row == currentRow + 1 && boardState[row][column - 1] != null && boardState[row][column - 1]!.color != color) {
+            validMoves.add([row, column - 1]);
+          }
+          if (column < 7 && row == currentRow + 1 && boardState[row][column + 1] != null && boardState[row][column + 1]!.color != color) {
+            validMoves.add([row, column + 1]);
+          }
+
+          if (boardState[currentRow + 1][currentColumn] != null) {
+            continue;
+          }
+
+          if (boardState[row][column] != null) {
             continue;
           }
 
@@ -120,5 +135,33 @@ class ChessEngine {
     }
 
     return validMoves;
+  }
+
+  List<List<int>> getValidKnightMove(ChessPiece piece, List<List<ChessPiece?>> boardState) {
+    final currentRow = piece.row;
+    final currentColumn = piece.column;
+    final color = piece.color;
+
+    List<List<int>> validMoves = [];
+
+      validMoves.add([currentRow - 1, currentColumn - 2]);
+      validMoves.add([currentRow - 2, currentColumn - 1]);
+      validMoves.add([currentRow - 2, currentColumn + 1]);
+      validMoves.add([currentRow - 1, currentColumn + 2]);
+
+      validMoves.add([currentRow + 1, currentColumn + 2]);
+      validMoves.add([currentRow + 2, currentColumn + 1]);
+      validMoves.add([currentRow + 2, currentColumn - 1]);
+      validMoves.add([currentRow + 1, currentColumn - 2]);
+
+      for (var row = 0; row < 8; row++) {
+        for (var column = 0; column < 8; column++) {        
+          if (boardState[row][column]?.color == Colors.white && validMoves.any((move) => move[0] == row && move[1] == column)) {
+            validMoves.removeWhere((move) => move[0] == row && move[1] == column);
+          }
+        }
+      }
+
+      return validMoves;
   }
 }

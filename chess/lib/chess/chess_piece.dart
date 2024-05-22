@@ -5,6 +5,7 @@ enum PieceType { pawn, rook, knight, bishop, queen, king }
 class ChessPiece {
   final PieceType type;
   final Color color;
+  
   int row;
   int column;
 
