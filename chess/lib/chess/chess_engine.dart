@@ -66,9 +66,23 @@ class ChessEngine {
       for (var column = 0; column < 8; column++) {
         //var square = boardState[row][column];
 
-        if (column == currentColumn ) {
-          validMoves.add([row, column]);
+        var move = [row, column];
+
+        if (column != currentColumn) {
+          continue;
         }
+
+        if (row > currentRow || row < currentRow - 1 && currentRow != 6) {
+          continue;
+        }
+
+        if (row > currentRow || row < currentRow - 2 && currentRow == 6) {
+          continue;
+        }
+
+
+
+        validMoves.add(move);
       }
     }
 

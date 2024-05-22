@@ -94,15 +94,27 @@ class _ChessBoardState extends State<ChessBoard> {
                 return GestureDetector(
                   onTap: () {
                     setState(() {
+                      selectedPieceValidMoves = [];
                       selectedPiece = piece;
-                      selectedPieceValidMoves = _engine.getValidPawnMoves(selectedPiece!, boardState);
+                      if (selectedPiece!.type == PieceType.pawn) {
+                        selectedPieceValidMoves = _engine.getValidPawnMoves(selectedPiece!, boardState);
+                      }
                     });
                   },
                   child: DragTarget<ChessPiece>(
                     onWillAcceptWithDetails: (data) {
+                      setState(() {
+                        if (selectedPiece != data.data) {
+                          selectedPieceValidMoves = [];
+                        }        
+                        
+                        selectedPiece = data.data;  
+                      });
                       return true;
                     },
                     onAcceptWithDetails: (movedPiece) {
+                      selectedPieceValidMoves = [];
+                      
                       if (!_engine.isValidMove(movedPiece.data, row, column, boardState)) {
                         return;
                       }
