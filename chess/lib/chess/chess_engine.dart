@@ -39,7 +39,7 @@ class ChessEngine {
     piece.row = destinationRow;
     piece.column = destinationColumn;
     
-    bool isStillInCheck = isInCheck(boardState) == piece.color;
+    bool isStillInCheck = getColorInCheck(boardState) == piece.color;
     
     piece.row = originalRow;
     piece.column = originalColumn;
@@ -73,6 +73,72 @@ class ChessEngine {
         return false;
     }
   }
+
+  Color? testCheckmate(List<List<ChessPiece?>> boardState, Color color) {
+    if (getColorInCheck(boardState) == color) {
+      return color;
+    }
+
+    for (var i = 0; i < 8; i++) {
+      for (var j = 0; j < 8; j++) {
+        var piece = boardState[i][j];
+
+        if (piece != null && piece.color == color) {
+          var validMoves = [];
+          
+          switch (piece.type) {
+            case PieceType.pawn:
+              validMoves = getValidPawnMoves(piece, boardState);
+              break;
+              
+            case PieceType.rook:
+              getValidRookMoves(piece, boardState);
+              break;
+
+            case PieceType.knight:
+              getValidKnightMoves(piece, boardState);
+              break;
+
+            case PieceType.bishop:
+              getValidBishopMoves(piece, boardState);
+              break;
+
+            case PieceType.queen:
+              getValidQueenMoves(piece, boardState);
+              break;
+
+            case PieceType.king:
+              getValidKingMoves(piece, boardState);
+              break;
+          }
+
+          for (var move in validMoves) {
+            var copiedBoardState = simulateMove(boardState, piece, move[0], move[1]);
+            
+            if (getColorInCheck(copiedBoardState) == color) {
+              return color == Colors.white ? Colors.black : Colors.white;
+            }
+          }
+        }
+      }
+    }    
+    
+    return null;
+}
+
+List<List<ChessPiece?>> simulateMove(List<List<ChessPiece?>> boardState, ChessPiece piece, int row, int column) {
+  var copiedBoardState = List<List<ChessPiece?>>.generate(8, (i) => List<ChessPiece?>.from(boardState[i]));
+  
+  copiedBoardState[piece.row][piece.column] = null;
+  copiedBoardState[row][column] = ChessPiece(
+    type: piece.type,
+    color: piece.color,
+    row: row,
+    column: column,
+  );
+
+  return copiedBoardState;
+}
 
   bool isValidPawnMove(ChessPiece piece, int destinationRow, int destinationColumn, List<List<ChessPiece?>> boardState) {
     return getValidPawnMoves(piece, boardState).any((move) => move[0] == destinationRow && move[1] == destinationColumn);
@@ -313,7 +379,7 @@ class ChessEngine {
     return validMoves;
   }
 
-  Color? isInCheck(List<List<ChessPiece?>> boardState) {
+  Color? getColorInCheck(List<List<ChessPiece?>> boardState) {
     int? whiteKingRow;
     int? whiteKingColumn;
     int? blackKingRow;
@@ -385,5 +451,4 @@ class ChessEngine {
 
     return null;
   }
-
 }

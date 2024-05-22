@@ -131,6 +131,7 @@ class _ChessBoardState extends State<ChessBoard> {
                         
                         selectedPiece = data.data;  
                       });
+                      
                       return true;
                     },
                     onAcceptWithDetails: (movedPiece) {
@@ -149,7 +150,12 @@ class _ChessBoardState extends State<ChessBoard> {
                       ChessPiece? capturedPieceOrNull = _engine.makeMove(movedPiece.data, row, column, boardState);
                       tryCapturePiece(capturedPieceOrNull);
 
-                      colorInCheck = _engine.isInCheck(boardState);
+                      colorInCheck = _engine.getColorInCheck(boardState);
+                      Color? checkmateColor = _engine.testCheckmate(boardState, Colors.white);
+                      
+                      if (checkmateColor != null) {
+                        print(checkmateColor == Colors.white ? "black wins!!" : "white wins!!");
+                      }
 
                       setState(() {});
                     },
@@ -192,8 +198,7 @@ class _ChessBoardState extends State<ChessBoard> {
       child: piece != null ? _buildDraggablePiece(piece) : isValidMove ? 
         Center(
           child: Container(
-            width: 20,
-            height: 20,
+            width: 20, height: 20,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
               color: selectedPieceValidMoveColor
@@ -207,8 +212,7 @@ class _ChessBoardState extends State<ChessBoard> {
   Widget _buildCapturedPieceList(List<ChessPiece> pieces) => Padding(
     padding: const EdgeInsets.all(16),
     child: SizedBox(
-      width: 800,
-      height: 80,
+      width: 800, height: 80,
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
