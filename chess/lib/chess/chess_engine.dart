@@ -43,8 +43,8 @@ class ChessEngine {
       case PieceType.queen:
         return isValidQueenMove(piece, destinationRow, destinationColumn, boardState);
 
-      // case PieceType.king:
-      //   return isValidKingMove(piece, destinationRow, destinationColumn, boardState);
+      case PieceType.king:
+        return isValidKingMove(piece, destinationRow, destinationColumn, boardState);
 
       default:
         return false;
@@ -56,20 +56,23 @@ class ChessEngine {
   }
   
   bool isValidKnightMove(ChessPiece piece, int destinationRow, int destinationColumn, List<List<ChessPiece?>> boardState) {
-    return getValidKnightMove(piece, boardState).any((move) => move[0] == destinationRow && move[1] == destinationColumn);
+    return getValidKnightMoves(piece, boardState).any((move) => move[0] == destinationRow && move[1] == destinationColumn);
   }
 
   bool isValidBishopMove(ChessPiece piece, int destinationRow, int destinationColumn, List<List<ChessPiece?>> boardState) {
-    return getValidBishopMove(piece, boardState).any((move) => move[0] == destinationRow && move[1] == destinationColumn);
+    return getValidBishopMoves(piece, boardState).any((move) => move[0] == destinationRow && move[1] == destinationColumn);
   }
 
   bool isValidRookMove(ChessPiece piece, int destinationRow, int destinationColumn, List<List<ChessPiece?>> boardState) {
-    return getValidRookMove(piece, boardState).any((move) => move[0] == destinationRow && move[1] == destinationColumn);
+    return getValidRookMoves(piece, boardState).any((move) => move[0] == destinationRow && move[1] == destinationColumn);
   }
 
-
   bool isValidQueenMove(ChessPiece piece, int destinationRow, int destinationColumn, List<List<ChessPiece?>> boardState) {
-    return getValidQueenMove(piece, boardState).any((move) => move[0] == destinationRow && move[1] == destinationColumn);
+    return getValidQueenMoves(piece, boardState).any((move) => move[0] == destinationRow && move[1] == destinationColumn);
+  }
+
+  bool isValidKingMove(ChessPiece piece, int destinationRow, int destinationColumn, List<List<ChessPiece?>> boardState) {
+    return getValidKingMoves(piece, boardState).any((move) => move[0] == destinationRow && move[1] == destinationColumn);
   }
 
   List<List<int>> getValidPawnMoves(ChessPiece piece, List<List<ChessPiece?>> boardState) {
@@ -150,7 +153,7 @@ class ChessEngine {
     return validMoves;
   }
 
-  List<List<int>> getValidKnightMove(ChessPiece piece, List<List<ChessPiece?>> boardState) {
+  List<List<int>> getValidKnightMoves(ChessPiece piece, List<List<ChessPiece?>> boardState) {
     final currentRow = piece.row;
     final currentColumn = piece.column;
     final color = piece.color;
@@ -176,7 +179,7 @@ class ChessEngine {
       return validMoves;
   }
 
-  List<List<int>> getValidBishopMove(ChessPiece piece, List<List<ChessPiece?>> boardState) {
+  List<List<int>> getValidBishopMoves(ChessPiece piece, List<List<ChessPiece?>> boardState) {
     final currentRow = piece.row;
     final currentColumn = piece.column;
     final color = piece.color;
@@ -212,7 +215,7 @@ class ChessEngine {
     return validMoves;
   }
   
-  List<List<int>> getValidRookMove(ChessPiece piece, List<List<ChessPiece?>> boardState) {
+  List<List<int>> getValidRookMoves(ChessPiece piece, List<List<ChessPiece?>> boardState) {
     final currentRow = piece.row;
     final currentColumn = piece.column;
     final color = piece.color;
@@ -248,12 +251,41 @@ class ChessEngine {
     return validMoves;
   }
 
-  List<List<int>> getValidQueenMove(ChessPiece piece, List<List<ChessPiece?>> boardState) {
+  List<List<int>> getValidQueenMoves(ChessPiece piece, List<List<ChessPiece?>> boardState) {
     List<List<int>> validMoves = [];
 
     // LOL
-    validMoves += getValidBishopMove(piece, boardState);
-    validMoves += getValidRookMove(piece, boardState);
+    validMoves += getValidBishopMoves(piece, boardState);
+    validMoves += getValidRookMoves(piece, boardState);
+    
+    return validMoves;
+  }
+
+  List<List<int>> getValidKingMoves(ChessPiece piece, List<List<ChessPiece?>> boardState) {
+    final currentRow = piece.row;
+    final currentColumn = piece.column;
+    
+    List<List<int>> validMoves = [];
+
+    for (int row = currentRow - 1; row <= currentRow + 1; row++) {
+      for (int column = currentColumn - 1; column <= currentColumn + 1; column++) {
+        if (row == currentRow && column == currentColumn) {
+          continue;
+        }
+
+        if (row < 0 || row >= 8 || column < 0 || column >= 8) {
+          continue;
+        }
+
+        if (boardState[row][column] != null) {
+          if (boardState[row][column]!.color == piece.color) {
+          continue;
+          }
+        }
+        
+        validMoves.add([row, column]);
+      }
+    }
     
     return validMoves;
   }

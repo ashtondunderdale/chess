@@ -104,14 +104,16 @@ class _ChessBoardState extends State<ChessBoard> {
                       if (selectedPiece!.type == PieceType.pawn) {
                         selectedPieceValidMoves = _engine.getValidPawnMoves(selectedPiece!, boardState);
                       } else if (selectedPiece!.type == PieceType.knight) {
-                        selectedPieceValidMoves = _engine.getValidKnightMove(selectedPiece!, boardState);
+                        selectedPieceValidMoves = _engine.getValidKnightMoves(selectedPiece!, boardState);
                       } else if (selectedPiece!.type == PieceType.bishop) {
-                        selectedPieceValidMoves = _engine.getValidBishopMove(selectedPiece!, boardState);
+                        selectedPieceValidMoves = _engine.getValidBishopMoves(selectedPiece!, boardState);
                       } else if (selectedPiece!.type == PieceType.rook) {
-                        selectedPieceValidMoves = _engine.getValidRookMove(selectedPiece!, boardState);
+                        selectedPieceValidMoves = _engine.getValidRookMoves(selectedPiece!, boardState);
                       } else if (selectedPiece!.type == PieceType.queen) {
-                        selectedPieceValidMoves = _engine.getValidQueenMove(selectedPiece!, boardState);
-                      }
+                        selectedPieceValidMoves = _engine.getValidQueenMoves(selectedPiece!, boardState);
+                      } else if (selectedPiece!.type == PieceType.king) {
+                        selectedPieceValidMoves = _engine.getValidKingMoves(selectedPiece!, boardState);
+                      } 
                     });
                   },
                   child: DragTarget<ChessPiece>(
