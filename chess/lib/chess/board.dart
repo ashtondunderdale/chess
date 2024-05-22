@@ -96,9 +96,17 @@ class _ChessBoardState extends State<ChessBoard> {
                   onTap: () {
                     setState(() {
                       selectedPieceValidMoves = [];
+
+                      var previousPiece = selectedPiece;
                       selectedPiece = piece;
 
                       if (selectedPiece == null) {
+                        return;
+                      }
+
+                      if (piece!.row == selectedPiece!.row && piece.column == selectedPiece!.column && previousPiece != null) {
+                        selectedPiece = null;
+
                         return;
                       }
 
@@ -131,7 +139,7 @@ class _ChessBoardState extends State<ChessBoard> {
                     onAcceptWithDetails: (movedPiece) {
                       selectedPieceValidMoves = [];
 
-                      if (!_engine.isValidMoveNoCheck(movedPiece.data, row, column, boardState, colorInCheck)) {
+                      if (!_engine.isValidMove(movedPiece.data, row, column, boardState, colorInCheck)) {
                         return;
                       }
 

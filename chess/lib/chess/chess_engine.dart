@@ -27,7 +27,7 @@ class ChessEngine {
     return capturedPiece;
   }
 
-  bool isValidMoveNoCheck(ChessPiece piece, int destinationRow, int destinationColumn, List<List<ChessPiece?>> boardState, Color? colorInCheck) {
+  bool isValidMove(ChessPiece piece, int destinationRow, int destinationColumn, List<List<ChessPiece?>> boardState, Color? colorInCheck) {
     engineColorInCheck = colorInCheck;
     
     var originalRow = piece.row;
