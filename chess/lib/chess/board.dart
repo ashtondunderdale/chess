@@ -19,6 +19,8 @@ class ChessBoard extends StatelessWidget {
             final row = index ~/ 8;
             final column = index % 8;
             final isWhite = (row + column) % 2 == 0;
+          
+            final position = Vector2(x: row, y: column);
 
             return Container(
               decoration: BoxDecoration(
@@ -30,4 +32,18 @@ class ChessBoard extends StatelessWidget {
       ),
     ),
   );
+}
+
+class Vector2 {
+  final int x;
+  final int y;
+
+  Vector2({
+    required this.x,
+    required this.y
+  });
+}
+
+class ChessPiece {
+  
 }
