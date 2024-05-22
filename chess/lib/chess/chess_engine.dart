@@ -248,5 +248,13 @@ class ChessEngine {
     return validMoves;
   }
 
+  List<List<int>> getValidQueenMove(ChessPiece piece, List<List<ChessPiece?>> boardState) {
+    List<List<int>> validMoves = [];
 
+    // LOL
+    validMoves += getValidBishopMove(piece, boardState);
+    validMoves += getValidRookMove(piece, boardState);
+    
+    return validMoves;
+  }
 }
