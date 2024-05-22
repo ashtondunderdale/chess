@@ -105,6 +105,8 @@ class _ChessBoardState extends State<ChessBoard> {
                         selectedPieceValidMoves = _engine.getValidPawnMoves(selectedPiece!, boardState);
                       } else if (selectedPiece!.type == PieceType.knight) {
                         selectedPieceValidMoves = _engine.getValidKnightMove(selectedPiece!, boardState);
+                      } else if (selectedPiece!.type == PieceType.bishop) {
+                        selectedPieceValidMoves = _engine.getValidBishopMove(selectedPiece!, boardState);
                       }
                     });
                   },
@@ -131,7 +133,6 @@ class _ChessBoardState extends State<ChessBoard> {
                       }
 
                       isWhiteMove = !isWhiteMove;
-                      print(isWhiteMove);
 
                       ChessPiece? capturedPieceOrNull = _engine.makeMove(movedPiece.data, row, column, boardState);
                       tryCapturePiece(capturedPieceOrNull);

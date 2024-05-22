@@ -37,8 +37,8 @@ class ChessEngine {
       case PieceType.knight:
         return isValidKnightMove(piece, destinationRow, destinationColumn, boardState);
 
-      // case PieceType.bishop:
-      //   return isValidBishopMove(piece, destinationRow, destinationColumn, boardState);
+      case PieceType.bishop:
+        return isValidBishopMove(piece, destinationRow, destinationColumn, boardState);
 
       // case PieceType.queen:
       //   return isValidQueenMove(piece, destinationRow, destinationColumn, boardState);
@@ -57,6 +57,10 @@ class ChessEngine {
   
   bool isValidKnightMove(ChessPiece piece, int destinationRow, int destinationColumn, List<List<ChessPiece?>> boardState) {
     return getValidKnightMove(piece, boardState).any((move) => move[0] == destinationRow && move[1] == destinationColumn);
+  }
+
+    bool isValidBishopMove(ChessPiece piece, int destinationRow, int destinationColumn, List<List<ChessPiece?>> boardState) {
+    return getValidBishopMove(piece, boardState).any((move) => move[0] == destinationRow && move[1] == destinationColumn);
   }
 
   List<List<int>> getValidPawnMoves(ChessPiece piece, List<List<ChessPiece?>> boardState) {
@@ -144,24 +148,24 @@ class ChessEngine {
 
     List<List<int>> validMoves = [];
 
-      validMoves.add([currentRow - 1, currentColumn - 2]);
-      validMoves.add([currentRow - 2, currentColumn - 1]);
-      validMoves.add([currentRow - 2, currentColumn + 1]);
-      validMoves.add([currentRow - 1, currentColumn + 2]);
+    List<List<int>> knightOffsets = [
+      [-1, -2], [-2, 1], [-1, 2], [1, 2],
+      [-2, -1], [1, -2], [2, -1], [2, 1], 
+    ];
 
-      validMoves.add([currentRow + 1, currentColumn + 2]);
-      validMoves.add([currentRow + 2, currentColumn + 1]);
-      validMoves.add([currentRow + 2, currentColumn - 1]);
-      validMoves.add([currentRow + 1, currentColumn - 2]);
+    for (var offset in knightOffsets) {
+      int row = currentRow + offset[0];
+      int column = currentColumn + offset[1];
 
-      for (var row = 0; row < 8; row++) {
-        for (var column = 0; column < 8; column++) {        
-          if (boardState[row][column]?.color == Colors.white && validMoves.any((move) => move[0] == row && move[1] == column)) {
-            validMoves.removeWhere((move) => move[0] == row && move[1] == column);
-          }
+      if (row >= 0 && row < 8 && column >= 0 && column < 8) {
+        if (boardState[row][column] == null || boardState[row][column]!.color != color) {
+          validMoves.add([row, column]);
         }
       }
+    }
 
       return validMoves;
   }
+
+
 }
