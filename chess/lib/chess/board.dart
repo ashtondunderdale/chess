@@ -11,12 +11,15 @@ class ChessBoard extends StatefulWidget {
 }
 
 class _ChessBoardState extends State<ChessBoard> {
+  final _engine = ChessEngine();
+
   late List<List<ChessPiece?>> boardState;
 
   List<ChessPiece> capturedLightPieces = [];
   List<ChessPiece> capturedDarkPieces = [];
 
   ChessPiece? selectedPiece;
+  List<List<int>> selectedPieceValidMoves = [];
 
   bool isWhiteMove = true;
 
@@ -92,6 +95,7 @@ class _ChessBoardState extends State<ChessBoard> {
                   onTap: () {
                     setState(() {
                       selectedPiece = piece;
+                      selectedPieceValidMoves = _engine.getValidPawnMoves(selectedPiece!, boardState);
                     });
                   },
                   child: DragTarget<ChessPiece>(
@@ -99,27 +103,22 @@ class _ChessBoardState extends State<ChessBoard> {
                       return true;
                     },
                     onAcceptWithDetails: (movedPiece) {
-                      if (!ChessEngine.isValidMove(movedPiece.data, row, column, boardState)) {
+                      if (!_engine.isValidMove(movedPiece.data, row, column, boardState)) {
                         return;
                       }
 
-                      if (!ChessEngine.isCorrectPlayerTurn(isWhiteMove, movedPiece.data)) {
+                      if (!_engine.isCorrectPlayerTurn(isWhiteMove, movedPiece.data)) {
                         return;
                       }
 
                       isWhiteMove = !isWhiteMove;
 
-                      ChessPiece? capturedPieceOrNull = ChessEngine.makeMove(movedPiece.data, row, column, boardState);
+                      ChessPiece? capturedPieceOrNull = _engine.makeMove(movedPiece.data, row, column, boardState);
                       tryCapturePiece(capturedPieceOrNull);
 
                       setState(() {});
                     },
-                    builder: (context, candidateData, rejectedData) => Container(
-                      decoration: BoxDecoration(
-                        color: piece == selectedPiece && selectedPiece != null ? selectedPieceColor : isWhiteSquare ? lightSquareColor : darkSquareColor,
-                      ),
-                      child: piece != null ? _buildDraggablePiece(piece) : null,
-                    ),
+                    builder: (context, candidateData, rejectedData) => _buildSquare(row, column, piece, isWhiteSquare),
                   ),
                 );
               },
@@ -141,6 +140,27 @@ class _ChessBoardState extends State<ChessBoard> {
     } else {
       capturedDarkPieces.add(capturedPiece);
     }
+  }
+
+  Widget _buildSquare(int row, int column, ChessPiece? piece, bool isWhiteSquare) {
+    bool isValidMove = selectedPieceValidMoves.any((move) => move[0] == row && move[1] == column);
+
+
+    Color squareColor;
+    if (piece == selectedPiece && selectedPiece != null) {
+      squareColor = selectedPieceColor;
+    } else if (isValidMove) {
+      squareColor = selectedPieceValidMoveColor;
+    } else {
+      squareColor = isWhiteSquare ? lightSquareColor : darkSquareColor;
+    }
+
+    return Container(
+      decoration: BoxDecoration(
+        color: squareColor,
+      ),
+      child: piece != null ? _buildDraggablePiece(piece) : null,
+    );
   }
 
   Widget _buildCapturedPieceList(List<ChessPiece> pieces) => Padding(
