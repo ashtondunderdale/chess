@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../constants.dart';
+import 'chess_engine.dart';
 import 'chess_piece.dart';
 
 class ChessBoard extends StatefulWidget {
@@ -84,7 +85,7 @@ class _ChessBoardState extends State<ChessBoard> {
                 final row = index ~/ 8;
                 final column = index % 8;
           
-                final isWhite = (row + column) % 2 == 0;
+                final isWhiteSquare = (row + column) % 2 == 0;
                 final piece = boardState[row][column];
           
                 return GestureDetector(
@@ -98,40 +99,19 @@ class _ChessBoardState extends State<ChessBoard> {
                       return true;
                     },
                     onAcceptWithDetails: (movedPiece) {
-
-                      if (isWhiteMove && movedPiece.data.color != Colors.white) {
-                        return;
-                      } else if (!isWhiteMove && movedPiece.data.color != Colors.black) {
-                        return;
-                      }
-
-                      isWhiteMove = !isWhiteMove;
-
-                      setState(() {
-                        boardState[movedPiece.data.row][movedPiece.data.column] = null;
-                        
-                        movedPiece.data.row = row;
-                        movedPiece.data.column = column;
-                  
-                        var capturedPiece = boardState[row][column];
-                        boardState[row][column] = movedPiece.data;
-                  
-                        if (capturedPiece == null) {
+                        if (!ChessEngine.isValidMove(movedPiece.data, row, column, boardState)) {
                           return;
                         }
-                  
-                        if (capturedPiece.color == Colors.white) {
-                          capturedLightPieces.add(capturedPiece);
-                        } else {
-                          capturedDarkPieces.add(capturedPiece);
+                        
+                        if (!ChessEngine.isCorrectPlayerTurn(isWhiteMove, movedPiece.data)) {
+                          return;
                         }
-                  
-                        setState(() {});
-                      });
+
+                        makeMove(movedPiece.data, row, column);
                     },
                     builder: (context, candidateData, rejectedData) => Container(
                       decoration: BoxDecoration(
-                        color: piece == selectedPiece && selectedPiece != null ? selectedPieceColor : isWhite ? lightSquareColor : darkSquareColor,
+                        color: piece == selectedPiece && selectedPiece != null ? selectedPieceColor : isWhiteSquare ? lightSquareColor : darkSquareColor,
                       ),
                       child: piece != null ? _buildDraggablePiece(piece) : null,
                     ),
@@ -146,12 +126,38 @@ class _ChessBoardState extends State<ChessBoard> {
     ),
   );
 
+  void makeMove(ChessPiece movedPiece, int row, int column) {
+    setState(() {
+
+      isWhiteMove = !isWhiteMove;
+
+      boardState[movedPiece.row][movedPiece.column] = null;
+      
+      movedPiece.row = row;
+      movedPiece.column = column;
+
+      var capturedPiece = boardState[row][column];
+      boardState[row][column] = movedPiece;
+
+      if (capturedPiece == null) {
+        return;
+      }
+
+      if (capturedPiece.color == Colors.white) {
+        capturedLightPieces.add(capturedPiece);
+      } else {
+        capturedDarkPieces.add(capturedPiece);
+      }
+
+      setState(() {});
+    });
+  }
+
   Widget _buildCapturedPieceList(List<ChessPiece> pieces) => Padding(
     padding: const EdgeInsets.all(16),
-    child: Container(
+    child: SizedBox(
       width: 800,
       height: 80,
-      decoration: BoxDecoration(border: Border.all(color: Colors.black, width: 2)),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
