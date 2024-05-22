@@ -26,7 +26,7 @@ class ChessEngine {
     return capturedPiece;
   }
   
-  bool isValidMove(ChessPiece piece, int destinationRow, int destinationColumn, List<List<ChessPiece?>> boardState, Color? colorInCheck) {
+  bool isValidMove(ChessPiece piece, int destinationRow, int destinationColumn, List<List<ChessPiece?>> boardState) {
     switch (piece.type) {
       case PieceType.pawn:
         return isValidPawnMove(piece, destinationRow, destinationColumn, boardState);

@@ -131,7 +131,7 @@ class _ChessBoardState extends State<ChessBoard> {
                     onAcceptWithDetails: (movedPiece) {
                       selectedPieceValidMoves = [];
 
-                      if (!_engine.isValidMove(movedPiece.data, row, column, boardState, colorInCheck)) {
+                      if (!_engine.isValidMove(movedPiece.data, row, column, boardState)) {
                         return;
                       }
 
@@ -139,13 +139,13 @@ class _ChessBoardState extends State<ChessBoard> {
                         return;
                       }
 
-                      colorInCheck = _engine.isInCheck(boardState);
-                      print(colorInCheck);
-
                       isWhiteMove = !isWhiteMove;
 
                       ChessPiece? capturedPieceOrNull = _engine.makeMove(movedPiece.data, row, column, boardState);
                       tryCapturePiece(capturedPieceOrNull);
+
+                      colorInCheck = _engine.isInCheck(boardState);
+                      print(colorInCheck);
                       
                       setState(() {});
                     },
