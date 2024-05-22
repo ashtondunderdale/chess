@@ -167,5 +167,39 @@ class ChessEngine {
       return validMoves;
   }
 
+  List<List<int>> getValidBishopMove(ChessPiece piece, List<List<ChessPiece?>> boardState) {
+    final currentRow = piece.row;
+    final currentColumn = piece.column;
+    final color = piece.color;
 
+    List<List<int>> validMoves = [];
+
+    List<List<int>> directions = [
+      [-1, -1], [-1, 1], [1, -1], [1, 1]
+    ];
+
+    for (var direction in directions) {
+      int dx = direction[0];
+      int dy = direction[1];
+
+      for (int i = 1; i < 8; i++) {
+        int row = currentRow + i * dx;
+        int column = currentColumn + i * dy;
+
+        if (row < 0 || row >= 8 || column < 0 || column >= 8) {
+          continue;
+        }
+
+        if (boardState[row][column] == null || boardState[row][column]!.color != color) {
+          validMoves.add([row, column]);
+        }
+        
+        if (boardState[row][column] != null) {
+          break;
+        }
+      }
+    }
+  
+    return validMoves;
+  }
 }
