@@ -107,6 +107,10 @@ class _ChessBoardState extends State<ChessBoard> {
                         selectedPieceValidMoves = _engine.getValidKnightMove(selectedPiece!, boardState);
                       } else if (selectedPiece!.type == PieceType.bishop) {
                         selectedPieceValidMoves = _engine.getValidBishopMove(selectedPiece!, boardState);
+                      } else if (selectedPiece!.type == PieceType.rook) {
+                        selectedPieceValidMoves = _engine.getValidRookMove(selectedPiece!, boardState);
+                      } else if (selectedPiece!.type == PieceType.queen) {
+                        selectedPieceValidMoves = _engine.getValidQueenMove(selectedPiece!, boardState);
                       }
                     });
                   },
