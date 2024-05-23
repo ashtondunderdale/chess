@@ -74,10 +74,8 @@ class ChessEngine {
     }
   }
 
-  Color? testCheckmate(List<List<ChessPiece?>> boardState, Color color) {
-    if (getColorInCheck(boardState) == color) {
-      return color;
-    }
+  Color? testCheckmate(List<List<ChessPiece?>> boardState, bool isWhiteMove) {
+    Color color = isWhiteMove ? Colors.white : Colors.black;
 
     for (var i = 0; i < 8; i++) {
       for (var j = 0; j < 8; j++) {
@@ -116,7 +114,7 @@ class ChessEngine {
             var copiedBoardState = simulateMove(boardState, piece, move[0], move[1]);
             
             if (getColorInCheck(copiedBoardState) == color) {
-              return color == Colors.white ? Colors.black : Colors.white;
+              return color == Colors.white ? Colors.white : Colors.black;
             }
           }
         }
@@ -126,19 +124,19 @@ class ChessEngine {
     return null;
 }
 
-List<List<ChessPiece?>> simulateMove(List<List<ChessPiece?>> boardState, ChessPiece piece, int row, int column) {
-  var copiedBoardState = List<List<ChessPiece?>>.generate(8, (i) => List<ChessPiece?>.from(boardState[i]));
-  
-  copiedBoardState[piece.row][piece.column] = null;
-  copiedBoardState[row][column] = ChessPiece(
-    type: piece.type,
-    color: piece.color,
-    row: row,
-    column: column,
-  );
+  List<List<ChessPiece?>> simulateMove(List<List<ChessPiece?>> boardState, ChessPiece piece, int row, int column) {
+    var copiedBoardState = List<List<ChessPiece?>>.generate(8, (i) => List<ChessPiece?>.from(boardState[i]));
+    
+    copiedBoardState[piece.row][piece.column] = null;
+    copiedBoardState[row][column] = ChessPiece(
+      type: piece.type,
+      color: piece.color,
+      row: row,
+      column: column,
+    );
 
-  return copiedBoardState;
-}
+    return copiedBoardState;
+  }
 
   bool isValidPawnMove(ChessPiece piece, int destinationRow, int destinationColumn, List<List<ChessPiece?>> boardState) {
     return getValidPawnMoves(piece, boardState).any((move) => move[0] == destinationRow && move[1] == destinationColumn);

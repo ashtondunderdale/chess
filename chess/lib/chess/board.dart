@@ -151,7 +151,7 @@ class _ChessBoardState extends State<ChessBoard> {
                       tryCapturePiece(capturedPieceOrNull);
 
                       colorInCheck = _engine.getColorInCheck(boardState);
-                      Color? checkmateColor = _engine.testCheckmate(boardState, Colors.white);
+                      Color? checkmateColor = _engine.testCheckmate(boardState, isWhiteMove);
                       
                       if (checkmateColor != null) {
                         print(checkmateColor == Colors.white ? "black wins!!" : "white wins!!");
