@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:audioplayers/audioplayers.dart';
+
 import '../constants.dart';
 import 'chess_engine.dart';
 import 'chess_piece.dart';
@@ -12,6 +14,7 @@ class ChessBoard extends StatefulWidget {
 
 class _ChessBoardState extends State<ChessBoard> {
   final _engine = ChessEngine();
+  final _player = AudioPlayer();
 
   late List<List<ChessPiece?>> boardState;
 
@@ -24,12 +27,23 @@ class _ChessBoardState extends State<ChessBoard> {
   bool isWhiteMove = true;
   Color? colorInCheck;
 
+
   @override
   void initState() {
     super.initState();
+
     _initializeBoard();
+    _playStartGameSound();
   }
 
+  void _playStartGameSound() async {
+    try {
+      await _player.setSource(AssetSource('assets/audio/game_start.mp3'));
+      await _player.resume();
+    } catch (e) {
+      print("Error playing audio: $e");
+    }
+  }
   void _initializeBoard() {
     boardState = List.generate(8, (i) => List.filled(8, null));
 
@@ -154,7 +168,7 @@ class _ChessBoardState extends State<ChessBoard> {
                       Color? checkmateColor = _engine.testCheckmate(boardState, isWhiteMove);
                       
                       if (checkmateColor != null) {
-                        print(checkmateColor == Colors.white ? "black wins!!" : "white wins!!");
+                        print(checkmateColor);
                       }
 
                       setState(() {});
@@ -233,17 +247,17 @@ class _ChessBoardState extends State<ChessBoard> {
     final pieceColor = piece.color == Colors.white ? 'white' : 'black';
     switch (piece.type) {
       case PieceType.pawn:
-        return Image.asset('pawn_$pieceColor.png', width: 50, height: 50);
+        return Image.asset('images/pawn_$pieceColor.png', width: 50, height: 50);
       case PieceType.rook:
-        return Image.asset('rook_$pieceColor.png', width: 50, height: 50);
+        return Image.asset('images/rook_$pieceColor.png', width: 50, height: 50);
       case PieceType.knight:
-        return Image.asset('knight_$pieceColor.png', width: 50, height: 50);
+        return Image.asset('images/knight_$pieceColor.png', width: 50, height: 50);
       case PieceType.bishop:
-        return Image.asset('bishop_$pieceColor.png', width: 50, height: 50);
+        return Image.asset('images/bishop_$pieceColor.png', width: 50, height: 50);
       case PieceType.queen:
-        return Image.asset('queen_$pieceColor.png', width: 50, height: 50);
+        return Image.asset('images/queen_$pieceColor.png', width: 50, height: 50);
       case PieceType.king:
-        return Image.asset('king_$pieceColor.png', width: 50, height: 50);
+        return Image.asset('images/king_$pieceColor.png', width: 50, height: 50);
       default:
         return Image.asset('', width: 50, height: 50);
     }
