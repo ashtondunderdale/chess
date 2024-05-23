@@ -28,38 +28,11 @@ class _ChessBoardState extends State<ChessBoard> {
   bool isWhiteMove = true;
   Color? colorInCheck;
 
-
   @override
   void initState() {
     super.initState();
 
     _initializeBoard();
-    _playStartGameSound();
-  }
-
-  Future<bool> _assetExists(String assetPath) async {
-    try {
-      await rootBundle.load(assetPath);
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-
-  void _playStartGameSound() async {
-    const assetPath = 'audio/check.mp3';
-    if (await _assetExists(assetPath)) {
-      try {
-
-        await _player.setAudioSource(AudioSource.asset(assetPath));
-        await _player.play();
-
-      } catch (e) {
-        print("Error playing audio: $e");
-      }
-    } else {
-      print("Audio asset not found: $assetPath");
-    }
   }
 
   void _initializeBoard() {
@@ -166,7 +139,7 @@ class _ChessBoardState extends State<ChessBoard> {
                       
                       return true;
                     },
-                    onAcceptWithDetails: (movedPiece) {
+                    onAcceptWithDetails: (movedPiece) async {
                       selectedPieceValidMoves = [];
 
                       if (!_engine.isValidMove(movedPiece.data, row, column, boardState, colorInCheck)) {
@@ -183,10 +156,20 @@ class _ChessBoardState extends State<ChessBoard> {
                       tryCapturePiece(capturedPieceOrNull);
 
                       colorInCheck = _engine.getColorInCheck(boardState);
-                      Color? checkmateColor = _engine.testCheckmate(boardState, isWhiteMove);
+                      Color? checkmateColor = _engine.getCheckmateColor(boardState, isWhiteMove);
                       
+                      if (colorInCheck != null && checkmateColor == null) {
+                        playAudio("audio/check.mp3");
+                      } else if (capturedPieceOrNull != null && checkmateColor == null) {
+                        playAudio("audio/capture_piece.mp3");
+                      } else if (capturedPieceOrNull == null && checkmateColor == null) {
+                        playAudio("audio/piece_move.mp3");
+                      } else {
+                        playAudio("audio/checkmate_with_check.mp3");
+                      }
+
                       if (checkmateColor != null) {
-                        print(checkmateColor);
+                        print(checkmateColor.toString() + " loses!");
                       }
 
                       setState(() {});
@@ -278,6 +261,29 @@ class _ChessBoardState extends State<ChessBoard> {
         return Image.asset('images/king_$pieceColor.png', width: 50, height: 50);
       default:
         return Image.asset('', width: 50, height: 50);
+    }
+  }
+
+  void playAudio(String path) async {
+    if (await _assetExists(path)) {
+      try {
+        await _player.setAudioSource(AudioSource.asset(path));
+        await _player.play();
+
+      } catch (exception) {
+        print("Error playing audio: $exception");
+      }
+    } else {
+      print("Audio asset not found: $path");
+    }
+  }
+  
+  Future<bool> _assetExists(String assetPath) async {
+    try {
+      await rootBundle.load(assetPath);
+      return true;
+    } catch (e) {
+      return false;
     }
   }
 }

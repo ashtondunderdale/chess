@@ -74,7 +74,7 @@ class ChessEngine {
     }
   }
 
-  Color? testCheckmate(List<List<ChessPiece?>> boardState, bool isWhiteMove) {
+  Color? getCheckmateColor(List<List<ChessPiece?>> boardState, bool isWhiteMove) {
     Color color = isWhiteMove ? Colors.white : Colors.black;
 
     if (getColorInCheck(boardState) != color) {
