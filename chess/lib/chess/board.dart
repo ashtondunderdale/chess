@@ -157,7 +157,8 @@ class _ChessBoardState extends State<ChessBoard> {
 
                       colorInCheck = _engine.getColorInCheck(boardState);
                       Color? checkmateColor = _engine.getCheckmateColor(boardState, isWhiteMove);
-                      
+                      Color? stalemateColor = _engine.getDrawColor(boardState, isWhiteMove);
+
                       if (colorInCheck != null && checkmateColor == null) {
                         playAudio("audio/check.mp3");
                       } else if (capturedPieceOrNull != null && checkmateColor == null) {
@@ -168,8 +169,12 @@ class _ChessBoardState extends State<ChessBoard> {
                         playAudio("audio/checkmate_with_check.mp3");
                       }
 
+                      if (stalemateColor != null) {
+                        print("stalemate");
+                      }
+
                       if (checkmateColor != null) {
-                        print(checkmateColor.toString() + " loses!");
+                        print(checkmateColor == Colors.white ?  " white wins" : "black wins");
                       }
 
                       setState(() {});
