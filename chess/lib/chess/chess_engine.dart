@@ -77,56 +77,54 @@ class ChessEngine {
   Color? testCheckmate(List<List<ChessPiece?>> boardState, bool isWhiteMove) {
     Color color = isWhiteMove ? Colors.white : Colors.black;
 
+    if (getColorInCheck(boardState) != color) {
+      return null;
+    }
+
     for (var i = 0; i < 8; i++) {
       for (var j = 0; j < 8; j++) {
         var piece = boardState[i][j];
 
         if (piece != null && piece.color == color) {
-          var validMoves = [];
-          
+          List<List<int>> validMoves = [];
+
           switch (piece.type) {
             case PieceType.pawn:
               validMoves = getValidPawnMoves(piece, boardState);
               break;
-              
             case PieceType.rook:
-              getValidRookMoves(piece, boardState);
+              validMoves = getValidRookMoves(piece, boardState);
               break;
-
             case PieceType.knight:
-              getValidKnightMoves(piece, boardState);
+              validMoves = getValidKnightMoves(piece, boardState);
               break;
-
             case PieceType.bishop:
-              getValidBishopMoves(piece, boardState);
+              validMoves = getValidBishopMoves(piece, boardState);
               break;
-
             case PieceType.queen:
-              getValidQueenMoves(piece, boardState);
+              validMoves = getValidQueenMoves(piece, boardState);
               break;
-
             case PieceType.king:
-              getValidKingMoves(piece, boardState);
+              validMoves = getValidKingMoves(piece, boardState);
               break;
           }
 
           for (var move in validMoves) {
             var copiedBoardState = simulateMove(boardState, piece, move[0], move[1]);
-            
-            if (getColorInCheck(copiedBoardState) == color) {
-              return color == Colors.white ? Colors.white : Colors.black;
+            if (getColorInCheck(copiedBoardState) != color) {
+              return null;
             }
           }
         }
       }
-    }    
-    
-    return null;
-}
+    }
+
+    return color == Colors.white ? Colors.black : Colors.white;
+  }
 
   List<List<ChessPiece?>> simulateMove(List<List<ChessPiece?>> boardState, ChessPiece piece, int row, int column) {
     var copiedBoardState = List<List<ChessPiece?>>.generate(8, (i) => List<ChessPiece?>.from(boardState[i]));
-    
+
     copiedBoardState[piece.row][piece.column] = null;
     copiedBoardState[row][column] = ChessPiece(
       type: piece.type,
