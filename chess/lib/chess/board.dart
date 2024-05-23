@@ -165,9 +165,13 @@ class _ChessBoardState extends State<ChessBoard> {
                         playAudio("audio/capture_piece.mp3");
                       } else if (capturedPieceOrNull == null && checkmateColor == null) {
                         playAudio("audio/piece_move.mp3");
+                      } else if (checkmateColor == null && stalemateColor != null) {
+                        playAudio("audio/game_end.mp3");
                       } else {
                         playAudio("audio/checkmate_with_check.mp3");
                       }
+
+                      handleGameSounds(colorInCheck, checkmateColor, capturedPieceOrNull, stalemateColor);
 
                       if (stalemateColor != null) {
                         print("stalemate");
@@ -190,6 +194,20 @@ class _ChessBoardState extends State<ChessBoard> {
       ),
     ),
   );
+
+  void handleGameSounds(Color? colorInCheck, Color? checkmateColor, ChessPiece? capturedPieceOrNull, Color? stalemateColor) {
+    if (checkmateColor != null) {
+      playAudio("audio/checkmate_with_check.mp3");
+    } else if (colorInCheck != null) {
+      playAudio("audio/check.mp3");
+    } else if (stalemateColor != null) {
+      playAudio("audio/game_end.mp3");
+    } else if (capturedPieceOrNull != null) {
+      playAudio("audio/capture_piece.mp3");
+    } else {
+      playAudio("audio/piece_move.mp3");
+    }
+  }
 
   void tryCapturePiece(ChessPiece? capturedPiece) {
     if (capturedPiece == null) {
