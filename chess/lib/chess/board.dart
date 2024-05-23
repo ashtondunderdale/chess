@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:audioplayers/audioplayers.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:flutter/services.dart';
 
 import '../constants.dart';
 import 'chess_engine.dart';
@@ -36,14 +37,31 @@ class _ChessBoardState extends State<ChessBoard> {
     _playStartGameSound();
   }
 
-  void _playStartGameSound() async {
+  Future<bool> _assetExists(String assetPath) async {
     try {
-      await _player.setSource(AssetSource('assets/audio/game_start.mp3'));
-      await _player.resume();
+      await rootBundle.load(assetPath);
+      return true;
     } catch (e) {
-      print("Error playing audio: $e");
+      return false;
     }
   }
+
+  void _playStartGameSound() async {
+    const assetPath = 'audio/check.mp3';
+    if (await _assetExists(assetPath)) {
+      try {
+
+        await _player.setAudioSource(AudioSource.asset(assetPath));
+        await _player.play();
+
+      } catch (e) {
+        print("Error playing audio: $e");
+      }
+    } else {
+      print("Audio asset not found: $assetPath");
+    }
+  }
+
   void _initializeBoard() {
     boardState = List.generate(8, (i) => List.filled(8, null));
 
