@@ -17,6 +17,8 @@ class ChessBoard extends StatefulWidget {
 class _ChessBoardState extends State<ChessBoard> {
   final _engine = ChessEngine();
   final _player = AudioPlayer();
+  
+  final _boardTheme = BoardTheme(theme: "default", boardColor: BoardThemes.monochrome);
 
   late List<List<ChessPiece?>> boardState;
 
@@ -84,7 +86,6 @@ class _ChessBoardState extends State<ChessBoard> {
       selectedPieceValidMoves.clear();
       isWhiteMove = true;
       colorInCheck = null;
-      whitePiecesAtBottom = true;
       _initializeBoard();
     });
   }
@@ -133,6 +134,25 @@ class _ChessBoardState extends State<ChessBoard> {
                 ),
                 child: const Text(
                   "Flip Board",
+                  style: TextStyle(fontSize: 12),
+                ),
+              ),              
+              const SizedBox(width: 16),
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    //_boardTheme.theme = _boardTheme.theme == "default" ? "realistic" : "default";
+                  });
+                },
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: const Color.fromARGB(255, 72, 72, 72),
+                  backgroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                ),
+                child: const Text(
+                  "Change Theme",
                   style: TextStyle(fontSize: 12),
                 ),
               ),
@@ -263,7 +283,7 @@ class _ChessBoardState extends State<ChessBoard> {
     if (piece == selectedPiece && selectedPiece != null) {
       squareColor = selectedPieceColor;
     } else {
-      squareColor = isWhiteSquare ? lightSquareColor : darkSquareColor;
+      squareColor = isWhiteSquare ? _boardTheme.defaultLightSquareColor : _boardTheme.defaultDarkSquareColor;
     }
 
     return Container(
@@ -307,17 +327,17 @@ class _ChessBoardState extends State<ChessBoard> {
     
     switch (piece.type) {
       case PieceType.pawn:
-        return Image.asset('images/pawn_$pieceColor.png', width: 50, height: 50);
+        return Image.asset('images/${_boardTheme.theme}/pawn_$pieceColor.png', width: 50, height: 50);
       case PieceType.rook:
-        return Image.asset('images/rook_$pieceColor.png', width: 50, height: 50);
+        return Image.asset('images/${_boardTheme.theme}/rook_$pieceColor.png', width: 50, height: 50);
       case PieceType.knight:
-        return Image.asset('images/knight_$pieceColor.png', width: 50, height: 50);
+        return Image.asset('images/${_boardTheme.theme}/knight_$pieceColor.png', width: 50, height: 50);
       case PieceType.bishop:
-        return Image.asset('images/bishop_$pieceColor.png', width: 50, height: 50);
+        return Image.asset('images/${_boardTheme.theme}/bishop_$pieceColor.png', width: 50, height: 50);
       case PieceType.queen:
-        return Image.asset('images/queen_$pieceColor.png', width: 50, height: 50);
+        return Image.asset('images/${_boardTheme.theme}/queen_$pieceColor.png', width: 50, height: 50);
       case PieceType.king:
-        return Image.asset('images/king_$pieceColor.png', width: 50, height: 50);
+        return Image.asset('images/${_boardTheme.theme}/king_$pieceColor.png', width: 50, height: 50);
       default:
         return Image.asset('', width: 50, height: 50);
     }
