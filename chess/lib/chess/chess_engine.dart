@@ -16,15 +16,21 @@ class ChessEngine {
   }
 
   ChessPiece? makeMove(ChessPiece movedPiece, int row, int column, List<List<ChessPiece?>> boardState) {
-    boardState[movedPiece.row][movedPiece.column] = null;
-    
-    movedPiece.row = row;
-    movedPiece.column = column;
+    try {
+      boardState[movedPiece.row][movedPiece.column] = null;
+      
+      movedPiece.row = row;
+      movedPiece.column = column;
 
-    var capturedPiece = boardState[row][column];
-    boardState[row][column] = movedPiece;
+      var capturedPiece = boardState[row][column];
+      boardState[row][column] = movedPiece;
 
-    return capturedPiece;
+      return capturedPiece;
+    } catch (e) {
+      print(e);
+      return null;
+    }
+
   }
 
   bool isValidMove(ChessPiece piece, int destinationRow, int destinationColumn, List<List<ChessPiece?>> boardState, Color? colorInCheck) {
@@ -46,10 +52,10 @@ class ChessEngine {
     boardState[originalRow][originalColumn] = piece;
     boardState[destinationRow][destinationColumn] = capturedPiece;
     
-    return !isStillInCheck && isValidMoveWithoutCheck(piece, destinationRow, destinationColumn, boardState);
+    return !isStillInCheck && _isValidMoveWithoutCheck(piece, destinationRow, destinationColumn, boardState);
   }
   
-  bool isValidMoveWithoutCheck(ChessPiece piece, int destinationRow, int destinationColumn, List<List<ChessPiece?>> boardState) {
+  bool _isValidMoveWithoutCheck(ChessPiece piece, int destinationRow, int destinationColumn, List<List<ChessPiece?>> boardState) {
     switch (piece.type) {
       case PieceType.pawn:
         return isValidPawnMove(piece, destinationRow, destinationColumn, boardState);
@@ -110,7 +116,7 @@ class ChessEngine {
           }
 
           for (var move in validMoves) {
-            var copiedBoardState = simulateMove(boardState, piece, move[0], move[1]);
+            var copiedBoardState = _simulateMove(boardState, piece, move[0], move[1]);
             if (getColorInCheck(copiedBoardState) != color) {
               return null;
             }
@@ -122,7 +128,7 @@ class ChessEngine {
     return color == Colors.white ? Colors.black : Colors.white;
   }
 
-  List<List<ChessPiece?>> simulateMove(List<List<ChessPiece?>> boardState, ChessPiece piece, int row, int column) {
+  List<List<ChessPiece?>> _simulateMove(List<List<ChessPiece?>> boardState, ChessPiece piece, int row, int column) {
     var copiedBoardState = List<List<ChessPiece?>>.generate(8, (i) => List<ChessPiece?>.from(boardState[i]));
 
     copiedBoardState[piece.row][piece.column] = null;
@@ -172,7 +178,7 @@ class ChessEngine {
         }
 
         for (var move in validMoves) {
-          var copiedBoardState = simulateMove(boardState, piece, move[0], move[1]);
+          var copiedBoardState = _simulateMove(boardState, piece, move[0], move[1]);
           if (getColorInCheck(copiedBoardState) != currentPlayerColor) {
             return null;
           }

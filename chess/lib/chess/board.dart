@@ -254,14 +254,19 @@ class _ChessBoardState extends State<ChessBoard> {
                         return;
                       }
 
-                      if (isPlayingAgainstComputer) {
-                        _computer.generateRandomValidChessMove(boardState);
-                        isWhiteMove = !isWhiteMove;
-                        setState(() {});
-                      }
+                      isWhiteMove = !isWhiteMove;
 
                       ChessPiece? capturedPieceOrNull = _engine.makeMove(movedPiece.data, row, column, boardState);
-                      tryCapturePiece(capturedPieceOrNull);
+                      tryCapturePiece(capturedPieceOrNull);                 
+
+                      try {
+                        if (isPlayingAgainstComputer && !isWhiteMove) {
+                          _computer.generateRandomMove(boardState, isWhiteMove);
+                          isWhiteMove = !isWhiteMove;
+                        }
+                      } catch (exception) {
+                        print(exception);
+                      }
 
                       colorInCheck = _engine.getColorInCheck(boardState);
                       Color? checkmateColor = _engine.getCheckmateColor(boardState, isWhiteMove);
