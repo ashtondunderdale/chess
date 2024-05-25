@@ -87,6 +87,7 @@ class _ChessBoardState extends State<ChessBoard> {
       selectedPieceValidMoves.clear();
       isWhiteMove = true;
       colorInCheck = null;
+      playAudio("audio/game_start.mp3");
       _initializeBoard();
     });
   }
@@ -159,9 +160,9 @@ class _ChessBoardState extends State<ChessBoard> {
               ),
             ],
           ),
-          _buildCapturedPieceList(capturedLightPieces),
+          _buildCapturedPieceList(whitePiecesAtBottom ? capturedLightPieces : capturedDarkPieces),
           Container(
-            width: 500, height: 500,
+            width: 540, height: 540,
             decoration: BoxDecoration(border: Border.all(color: boardBorderColor, width: 2)),
             child: GridView.builder(
               itemCount: 64,
@@ -259,7 +260,7 @@ class _ChessBoardState extends State<ChessBoard> {
               },
             ),
           ),
-          _buildCapturedPieceList(capturedDarkPieces),
+          _buildCapturedPieceList(whitePiecesAtBottom ? capturedDarkPieces : capturedLightPieces),
         ],
       ),
     ),
