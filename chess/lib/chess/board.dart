@@ -28,6 +28,7 @@ class _ChessBoardState extends State<ChessBoard> {
 
   bool isWhiteMove = true;
   Color? colorInCheck;
+  bool whitePiecesAtBottom = true;
 
   @override
   void initState() {
@@ -83,7 +84,14 @@ class _ChessBoardState extends State<ChessBoard> {
       selectedPieceValidMoves.clear();
       isWhiteMove = true;
       colorInCheck = null;
+      whitePiecesAtBottom = true;
       _initializeBoard();
+    });
+  }
+
+  void _flipBoard() {
+    setState(() {
+      whitePiecesAtBottom = !whitePiecesAtBottom;
     });
   }
 
@@ -94,9 +102,45 @@ class _ChessBoardState extends State<ChessBoard> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  _resetGame();
+                },
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: const Color.fromARGB(255, 72, 72, 72),
+                  backgroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                ),
+                child: const Text(
+                  "Reset Board",
+                  style: TextStyle(fontSize: 12),
+                ),
+              ),
+              const SizedBox(width: 16),
+              ElevatedButton(
+                onPressed: _flipBoard,
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: const Color.fromARGB(255, 72, 72, 72),
+                  backgroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                ),
+                child: const Text(
+                  "Flip Board",
+                  style: TextStyle(fontSize: 12),
+                ),
+              ),
+            ],
+          ),
           _buildCapturedPieceList(capturedLightPieces),
           Container(
-            width: 600, height: 600,
+            width: 500, height: 500,
             decoration: BoxDecoration(border: Border.all(color: boardBorderColor, width: 2)),
             child: GridView.builder(
               itemCount: 64,
@@ -104,8 +148,8 @@ class _ChessBoardState extends State<ChessBoard> {
                 crossAxisCount: 8,
               ),
               itemBuilder: (context, index) {
-                final row = index ~/ 8;
-                final column = index % 8;
+                final row = whitePiecesAtBottom ? index ~/ 8 : 7 - (index ~/ 8);
+                final column = whitePiecesAtBottom ? index % 8 : 7 - (index % 8);
           
                 final isWhiteSquare = (row + column) % 2 == 0;
                 final piece = boardState[row][column];
@@ -171,18 +215,6 @@ class _ChessBoardState extends State<ChessBoard> {
                       colorInCheck = _engine.getColorInCheck(boardState);
                       Color? checkmateColor = _engine.getCheckmateColor(boardState, isWhiteMove);
                       Color? stalemateColor = _engine.getStalemateColor(boardState, isWhiteMove);
-
-                      if (colorInCheck != null && checkmateColor == null) {
-                        playAudio("audio/check.mp3");
-                      } else if (capturedPieceOrNull != null && checkmateColor == null) {
-                        playAudio("audio/capture_piece.mp3");
-                      } else if (capturedPieceOrNull == null && checkmateColor == null) {
-                        playAudio("audio/piece_move.mp3");
-                      } else if (checkmateColor == null && stalemateColor != null) {
-                        playAudio("audio/game_end.mp3");
-                      } else {
-                        playAudio("audio/checkmate_with_check.mp3");
-                      }
 
                       handleGameSounds(colorInCheck, checkmateColor, capturedPieceOrNull, stalemateColor);
 
@@ -272,6 +304,7 @@ class _ChessBoardState extends State<ChessBoard> {
 
   Image _buildPiece(ChessPiece piece) {
     final pieceColor = piece.color == Colors.white ? 'white' : 'black';
+    
     switch (piece.type) {
       case PieceType.pawn:
         return Image.asset('images/pawn_$pieceColor.png', width: 50, height: 50);
@@ -291,16 +324,16 @@ class _ChessBoardState extends State<ChessBoard> {
   }
 
   void handleGameSounds(Color? colorInCheck, Color? checkmateColor, ChessPiece? capturedPieceOrNull, Color? stalemateColor) {
-    if (checkmateColor != null) {
-      playAudio("audio/checkmate_with_check.mp3");
-    } else if (colorInCheck != null) {
+    if (colorInCheck != null && checkmateColor == null) {
       playAudio("audio/check.mp3");
-    } else if (stalemateColor != null) {
-      playAudio("audio/game_end.mp3");
-    } else if (capturedPieceOrNull != null) {
+    } else if (capturedPieceOrNull != null && checkmateColor == null) {
       playAudio("audio/capture_piece.mp3");
-    } else {
+    } else if (capturedPieceOrNull == null && checkmateColor == null) {
       playAudio("audio/piece_move.mp3");
+    } else if (checkmateColor == null && stalemateColor != null) {
+      playAudio("audio/game_end.mp3");
+    } else {
+      playAudio("audio/checkmate_with_check.mp3");
     }
   }
 
