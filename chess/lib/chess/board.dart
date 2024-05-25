@@ -35,6 +35,7 @@ class _ChessBoardState extends State<ChessBoard> {
   @override
   void initState() {
     super.initState();
+    playAudio("audio/game_start.mp3");
 
     _initializeBoard();
   }

@@ -57,20 +57,44 @@ class GameResultScreen extends StatelessWidget {
                 style: contentStyle,
               ),
             const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                onExitScreen();
-              },
-              style: ElevatedButton.styleFrom(
-                foregroundColor: const Color.fromARGB(255, 72, 72, 72),
-                backgroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-              ),
-              child: const Text(
-                "Play Again",
-                style: TextStyle(fontSize: 12),
+            SizedBox(
+              width: 280,
+              child: Row(
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      onExitScreen();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: const Color.fromARGB(255, 72, 72, 72),
+                      backgroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                    ),
+                    child: const Text(
+                      "Play Again",
+                      style: TextStyle(fontSize: 12),
+                    ),
+                  ),
+                  const Spacer(),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: const Color.fromARGB(255, 72, 72, 72),
+                      backgroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                    ),
+                    child: const Text(
+                      "Review Board",
+                      style: TextStyle(fontSize: 12),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
