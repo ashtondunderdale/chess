@@ -1,3 +1,4 @@
+import 'package:chess/chess/game_result_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:flutter/services.dart';
@@ -72,6 +73,18 @@ class _ChessBoardState extends State<ChessBoard> {
         column: i,
       );
     }
+  }
+
+  void _resetGame() {
+    setState(() {
+      capturedLightPieces.clear();
+      capturedDarkPieces.clear();
+      selectedPiece = null;
+      selectedPieceValidMoves.clear();
+      isWhiteMove = true;
+      colorInCheck = null;
+      _initializeBoard();
+    });
   }
 
   @override
@@ -174,7 +187,15 @@ class _ChessBoardState extends State<ChessBoard> {
                       handleGameSounds(colorInCheck, checkmateColor, capturedPieceOrNull, stalemateColor);
 
                       if (stalemateColor != null || checkmateColor != null) {
-                        _buildEndingScreen(context, stalemateColor != null, checkmateColor);
+                        showDialog(context: context,
+                          builder: (BuildContext context) => GameResultScreen(
+                            isStalemate: stalemateColor != null, winningColor: checkmateColor, 
+                            onExitScreen: () {
+                              Navigator.of(context).pop();
+                              _resetGame();
+                            }, 
+                          ),
+                        );
                       }
 
                       setState(() {});
@@ -190,32 +211,6 @@ class _ChessBoardState extends State<ChessBoard> {
       ),
     ),
   );
-
-  void _buildEndingScreen(BuildContext context, bool stalemate, Color? winningColor) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-        title: const Text(
-          "Game Over"
-        ),
-        content: Text(
-          stalemate 
-            ? "Stalemate"
-            : (winningColor == Colors.white ? 'White wins' : 'Black wins'),
-        ),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: const Text(
-              'OK'
-            ),
-          ),
-        ],
-      ),    
-    );
-  }
 
   void tryCapturePiece(ChessPiece? capturedPiece) {
     if (capturedPiece == null) {
