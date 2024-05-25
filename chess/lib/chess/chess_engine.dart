@@ -30,7 +30,6 @@ class ChessEngine {
       print(e);
       return null;
     }
-
   }
 
   bool isValidMove(ChessPiece piece, int destinationRow, int destinationColumn, List<List<ChessPiece?>> boardState, Color? colorInCheck) {

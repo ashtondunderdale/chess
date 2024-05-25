@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:chess/chess/computer_engine.dart';
 import 'package:chess/chess/game_result_screen.dart';
 import 'package:flutter/material.dart';
@@ -254,36 +256,24 @@ class _ChessBoardState extends State<ChessBoard> {
                         return;
                       }
 
-                      isWhiteMove = !isWhiteMove;
-
                       ChessPiece? capturedPieceOrNull = _engine.makeMove(movedPiece.data, row, column, boardState);
                       tryCapturePiece(capturedPieceOrNull);                 
+                      handleGameOver(capturedPieceOrNull);
+                      isWhiteMove = !isWhiteMove;
+                      setState(() {
 
-                      try {
-                        if (isPlayingAgainstComputer && !isWhiteMove) {
-                          _computer.generateRandomMove(boardState, isWhiteMove);
-                          isWhiteMove = !isWhiteMove;
-                        }
-                      } catch (exception) {
-                        print(exception);
-                      }
+                      });
 
-                      colorInCheck = _engine.getColorInCheck(boardState);
-                      Color? checkmateColor = _engine.getCheckmateColor(boardState, isWhiteMove);
-                      Color? stalemateColor = _engine.getStalemateColor(boardState, isWhiteMove);
+                      var random = Random();
+                      var randomDuration = Duration(milliseconds: 500 + random.nextInt(1000));
 
-                      handleGameSounds(colorInCheck, checkmateColor, capturedPieceOrNull, stalemateColor);
+                      await Future.delayed(randomDuration);
 
-                      if (stalemateColor != null || checkmateColor != null) {
-                        showDialog(context: context,
-                          builder: (BuildContext context) => GameResultScreen(
-                            isStalemate: stalemateColor != null, winningColor: checkmateColor, 
-                            onExitScreen: () {
-                              Navigator.of(context).pop();
-                              _resetGame();
-                            }, 
-                          ),
-                        );
+                      if (isPlayingAgainstComputer && !isWhiteMove) {
+                        ChessPiece? capturedPieceOrNull = _computer.generateRandomMove(boardState, isWhiteMove);
+                        tryCapturePiece(capturedPieceOrNull);
+                        handleGameOver(capturedPieceOrNull);
+                        isWhiteMove = !isWhiteMove;
                       }
 
                       setState(() {});
@@ -299,6 +289,26 @@ class _ChessBoardState extends State<ChessBoard> {
       ),
     ),
   );
+
+  void handleGameOver(ChessPiece? capturedPieceOrNull) async {
+      colorInCheck = _engine.getColorInCheck(boardState);
+      Color? checkmateColor = _engine.getCheckmateColor(boardState, isWhiteMove);
+      Color? stalemateColor = _engine.getStalemateColor(boardState, isWhiteMove);
+
+      await handleGameSounds(colorInCheck, checkmateColor, capturedPieceOrNull, stalemateColor);
+
+      if (stalemateColor != null || checkmateColor != null) {
+        showDialog(context: context,
+          builder: (BuildContext context) => GameResultScreen(
+            isStalemate: stalemateColor != null, winningColor: checkmateColor, 
+            onExitScreen: () {
+              Navigator.of(context).pop();
+              _resetGame();
+            }, 
+          ),
+        );
+      }
+  }
 
   void tryCapturePiece(ChessPiece? capturedPiece) {
     if (capturedPiece == null) {
@@ -379,21 +389,21 @@ class _ChessBoardState extends State<ChessBoard> {
     }
   }
 
-  void handleGameSounds(Color? colorInCheck, Color? checkmateColor, ChessPiece? capturedPieceOrNull, Color? stalemateColor) {
+  Future handleGameSounds(Color? colorInCheck, Color? checkmateColor, ChessPiece? capturedPieceOrNull, Color? stalemateColor) async {
     if (colorInCheck != null && checkmateColor == null) {
-      playAudio("audio/check.mp3");
+      await playAudio("audio/check.mp3");
     } else if (capturedPieceOrNull != null && checkmateColor == null) {
-      playAudio("audio/capture_piece.mp3");
+      await playAudio("audio/capture_piece.mp3");
     } else if (capturedPieceOrNull == null && checkmateColor == null) {
-      playAudio("audio/piece_move.mp3");
+      await playAudio("audio/piece_move.mp3");
     } else if (checkmateColor == null && stalemateColor != null) {
-      playAudio("audio/game_end.mp3");
+      await playAudio("audio/game_end.mp3");
     } else {
-      playAudio("audio/checkmate_with_check.mp3");
+      await playAudio("audio/checkmate_with_check.mp3");
     }
   }
 
-  void playAudio(String path) async {
+  Future playAudio(String path) async {
     if (await _assetExists(path)) {
       try {
         await _player.setAudioSource(AudioSource.asset(path));
