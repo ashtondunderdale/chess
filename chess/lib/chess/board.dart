@@ -1,3 +1,4 @@
+import 'package:chess/chess/computer_engine.dart';
 import 'package:chess/chess/game_result_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
@@ -16,6 +17,8 @@ class ChessBoard extends StatefulWidget {
 
 class _ChessBoardState extends State<ChessBoard> {
   final _engine = ChessEngine();
+  final _computer = ComputerEngine();
+
   final _player = AudioPlayer();
   
   final _boardTheme = BoardTheme(squareTheme: "default");
@@ -31,6 +34,8 @@ class _ChessBoardState extends State<ChessBoard> {
   bool isWhiteMove = true;
   Color? colorInCheck;
   bool whitePiecesAtBottom = true;
+
+  bool isPlayingAgainstComputer = true;
 
   @override
   void initState() {
@@ -158,6 +163,26 @@ class _ChessBoardState extends State<ChessBoard> {
                   style: TextStyle(fontSize: 12),
                 ),
               ),
+              const SizedBox(width: 16),
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    isPlayingAgainstComputer = !isPlayingAgainstComputer;
+                    _resetGame();
+                  });
+                },
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: const Color.fromARGB(255, 72, 72, 72),
+                  backgroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                ),
+                child: Text(
+                  isPlayingAgainstComputer ? "Computer Mode" : "2 Player Mode",
+                  style: const TextStyle(fontSize: 12),
+                ),
+              ),
             ],
           ),
           _buildCapturedPieceList(whitePiecesAtBottom ? capturedLightPieces : capturedDarkPieces),
@@ -229,7 +254,11 @@ class _ChessBoardState extends State<ChessBoard> {
                         return;
                       }
 
-                      isWhiteMove = !isWhiteMove;
+                      if (isPlayingAgainstComputer) {
+                        _computer.generateRandomValidChessMove(boardState);
+                        isWhiteMove = !isWhiteMove;
+                        setState(() {});
+                      }
 
                       ChessPiece? capturedPieceOrNull = _engine.makeMove(movedPiece.data, row, column, boardState);
                       tryCapturePiece(capturedPieceOrNull);
