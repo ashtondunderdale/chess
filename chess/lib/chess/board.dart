@@ -247,7 +247,6 @@ class _ChessBoardState extends State<ChessBoard> {
                     },
                     onAcceptWithDetails: (movedPiece) async {
                       selectedPieceValidMoves = [];
-
                       if (!_engine.isValidMove(movedPiece.data, row, column, boardState, colorInCheck)) {
                         return;
                       }
@@ -264,13 +263,13 @@ class _ChessBoardState extends State<ChessBoard> {
 
                       });
 
-                      var random = Random();
-                      var randomDuration = Duration(milliseconds: 500 + random.nextInt(1000));
+                      var rand = Random();
+                      var randomDuration = Duration(milliseconds: 500 + rand.nextInt(1000));
 
                       await Future.delayed(randomDuration);
 
                       if (isPlayingAgainstComputer && !isWhiteMove) {
-                        ChessPiece? capturedPieceOrNull = _computer.generateRandomMove(boardState, isWhiteMove);
+                        ChessPiece? capturedPieceOrNull = _computer.generateRandomMove(boardState, isWhiteMove, colorInCheck);
                         tryCapturePiece(capturedPieceOrNull);
                         handleGameOver(capturedPieceOrNull);
                         isWhiteMove = !isWhiteMove;
@@ -291,23 +290,23 @@ class _ChessBoardState extends State<ChessBoard> {
   );
 
   void handleGameOver(ChessPiece? capturedPieceOrNull) async {
-      colorInCheck = _engine.getColorInCheck(boardState);
-      Color? checkmateColor = _engine.getCheckmateColor(boardState, isWhiteMove);
-      Color? stalemateColor = _engine.getStalemateColor(boardState, isWhiteMove);
+    colorInCheck = _engine.getColorInCheck(boardState);
+    Color? checkmateColor = _engine.getCheckmateColor(boardState, isWhiteMove);
+    Color? stalemateColor = _engine.getStalemateColor(boardState, isWhiteMove);
 
-      await handleGameSounds(colorInCheck, checkmateColor, capturedPieceOrNull, stalemateColor);
+    await handleGameSounds(colorInCheck, checkmateColor, capturedPieceOrNull, stalemateColor);
 
-      if (stalemateColor != null || checkmateColor != null) {
-        showDialog(context: context,
-          builder: (BuildContext context) => GameResultScreen(
-            isStalemate: stalemateColor != null, winningColor: checkmateColor, 
-            onExitScreen: () {
-              Navigator.of(context).pop();
-              _resetGame();
-            }, 
-          ),
-        );
-      }
+    if (stalemateColor != null || checkmateColor != null) {
+      showDialog(context: context,
+        builder: (BuildContext context) => GameResultScreen(
+          isStalemate: stalemateColor != null, winningColor: checkmateColor, 
+          onExitScreen: () {
+            Navigator.of(context).pop();
+            _resetGame();
+          }, 
+        ),
+      );
+    }
   }
 
   void tryCapturePiece(ChessPiece? capturedPiece) {

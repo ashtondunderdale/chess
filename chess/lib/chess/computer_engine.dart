@@ -7,13 +7,21 @@ import 'chess_piece.dart';
 class ComputerEngine {
   final _engine = ChessEngine();
 
-  ChessPiece? generateRandomMove(List<List<ChessPiece?>> boardState, bool isWhiteMove) {
+  ChessPiece? generateRandomMove(List<List<ChessPiece?>> boardState, bool isWhiteMove, Color? colorInCheck) {
     var rand = Random();
     var colorToMove = isWhiteMove ? Colors.white : Colors.black; 
 
     var rowIndex = 0;
     var squareIndex = 0;
     ChessPiece piece;
+
+    if (_engine.getStalemateColor(boardState, isWhiteMove) != null) {
+      return null;
+    }
+
+    if (_engine.getCheckmateColor(boardState, isWhiteMove) != null) {
+      return null;
+    }
 
     try {
       while (true) {
@@ -63,6 +71,10 @@ class ComputerEngine {
 
           var row = move[0];
           var column = move[1];
+
+          if (!_engine.isValidMove(piece, row, column, boardState, colorInCheck)) {
+            continue;
+          }
 
           ChessPiece? capturedPieceOrNull = _engine.makeMove(piece, row, column, boardState);
           return capturedPieceOrNull;
