@@ -4,52 +4,44 @@ Color boardBorderColor = Colors.black;
 Color selectedPieceColor = const Color.fromARGB(255, 255, 249, 199);
 Color selectedPieceValidMoveColor = const Color.fromARGB(255, 230, 230, 230);
 
-Color monochromeLightSquareColor = const Color.fromARGB(255, 185, 185, 185);
-Color monochromeDarkSquareColor = const Color.fromARGB(255, 87, 87, 87);
-
-Color classicLightSquareColor = const Color.fromARGB(255, 216, 188, 178);
-Color classicDarkSquareColor = const Color.fromARGB(255, 90, 69, 46);
-
-Color defaultLightSquareColor = const Color.fromARGB(255, 221, 226, 207);
-Color defaultDarkSquareColor = Color.fromARGB(255, 90, 141, 71);
-
-
 class BoardTheme {
   late Color lightSquareColor;
   late Color darkSquareColor;
 
-  String theme;
-  String squareTheme = "default";
-  List<String> availableThemes = ["default", "classic", "monochrome"];
-  int currentThemeIndex = 0;
+  late String squareTheme;
+  late int currentThemeIndex;
+  late List<String> themeKeys;
 
-  BoardTheme({required this.theme}) : 
-    lightSquareColor = defaultLightSquareColor,
-    darkSquareColor = defaultDarkSquareColor;
+  late Map<String, Map<String, Color>> availableThemes = {
+    "default": {
+      "light": const Color.fromARGB(255, 221, 226, 207),
+      "dark": const Color.fromARGB(255, 90, 141, 71),
+    },
+    "classic": {
+      "light": const Color.fromARGB(255, 228, 210, 204),
+      "dark": const Color.fromARGB(255, 170, 149, 127),
+    },
+    "monochrome": {
+      "light": const Color.fromARGB(255, 185, 185, 185),
+      "dark": const Color.fromARGB(255, 87, 87, 87),
+    },
+  };
+
+  BoardTheme({
+    required String squareTheme,
+  }) {
+    themeKeys = availableThemes.keys.toList();
+    currentThemeIndex = themeKeys.indexOf(squareTheme);
+    updateTheme();
+  }
 
   void updateTheme() {
-    currentThemeIndex = (currentThemeIndex + 1) % availableThemes.length;
-    squareTheme = availableThemes[currentThemeIndex];
+    currentThemeIndex = (currentThemeIndex + 1) % themeKeys.length;
+    
+    final currentThemeKey = themeKeys[currentThemeIndex];
+    final themeColors = availableThemes[currentThemeKey]!;
 
-    switch (squareTheme) {
-      case "default":
-        lightSquareColor = defaultLightSquareColor;
-        darkSquareColor = defaultDarkSquareColor;
-        break;
-
-      case "classic":
-        lightSquareColor = classicLightSquareColor;
-        darkSquareColor = classicDarkSquareColor;
-        break;
-
-      case "monochrome":
-        lightSquareColor = monochromeLightSquareColor;
-        darkSquareColor = monochromeDarkSquareColor;
-        break;
-
-      default:
-        lightSquareColor = defaultLightSquareColor;
-        darkSquareColor = defaultDarkSquareColor;
-    }
+    lightSquareColor = themeColors['light'] ?? Colors.white;
+    darkSquareColor = themeColors['dark'] ?? Colors.black;
   }
 }

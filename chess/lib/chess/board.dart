@@ -18,7 +18,7 @@ class _ChessBoardState extends State<ChessBoard> {
   final _engine = ChessEngine();
   final _player = AudioPlayer();
   
-  final _boardTheme = BoardTheme(theme: "default");
+  final _boardTheme = BoardTheme(squareTheme: "default");
 
   late List<List<ChessPiece?>> boardState;
 
@@ -327,17 +327,17 @@ class _ChessBoardState extends State<ChessBoard> {
     
     switch (piece.type) {
       case PieceType.pawn:
-        return Image.asset('images/${_boardTheme.theme}/pawn_$pieceColor.png', width: 50, height: 50);
+        return Image.asset('images/default/pawn_$pieceColor.png', width: 50, height: 50);
       case PieceType.rook:
-        return Image.asset('images/${_boardTheme.theme}/rook_$pieceColor.png', width: 50, height: 50);
+        return Image.asset('images/default/rook_$pieceColor.png', width: 50, height: 50);
       case PieceType.knight:
-        return Image.asset('images/${_boardTheme.theme}/knight_$pieceColor.png', width: 50, height: 50);
+        return Image.asset('images/default/knight_$pieceColor.png', width: 50, height: 50);
       case PieceType.bishop:
-        return Image.asset('images/${_boardTheme.theme}/bishop_$pieceColor.png', width: 50, height: 50);
+        return Image.asset('images/default/bishop_$pieceColor.png', width: 50, height: 50);
       case PieceType.queen:
-        return Image.asset('images/${_boardTheme.theme}/queen_$pieceColor.png', width: 50, height: 50);
+        return Image.asset('images/default/queen_$pieceColor.png', width: 50, height: 50);
       case PieceType.king:
-        return Image.asset('images/${_boardTheme.theme}/king_$pieceColor.png', width: 50, height: 50);
+        return Image.asset('images/default/king_$pieceColor.png', width: 50, height: 50);
       default:
         return Image.asset('', width: 50, height: 50);
     }
