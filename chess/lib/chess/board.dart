@@ -18,7 +18,7 @@ class _ChessBoardState extends State<ChessBoard> {
   final _engine = ChessEngine();
   final _player = AudioPlayer();
   
-  final _boardTheme = BoardTheme(theme: "default", boardColor: BoardThemes.monochrome);
+  final _boardTheme = BoardTheme(theme: "default");
 
   late List<List<ChessPiece?>> boardState;
 
@@ -141,7 +141,7 @@ class _ChessBoardState extends State<ChessBoard> {
               ElevatedButton(
                 onPressed: () {
                   setState(() {
-                    //_boardTheme.theme = _boardTheme.theme == "default" ? "realistic" : "default";
+                    _boardTheme.updateTheme();
                   });
                 },
                 style: ElevatedButton.styleFrom(
@@ -283,7 +283,7 @@ class _ChessBoardState extends State<ChessBoard> {
     if (piece == selectedPiece && selectedPiece != null) {
       squareColor = selectedPieceColor;
     } else {
-      squareColor = isWhiteSquare ? _boardTheme.defaultLightSquareColor : _boardTheme.defaultDarkSquareColor;
+      squareColor = isWhiteSquare ? _boardTheme.lightSquareColor : _boardTheme.darkSquareColor;
     }
 
     return Container(
