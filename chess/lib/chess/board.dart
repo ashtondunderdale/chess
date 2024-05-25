@@ -157,7 +157,7 @@ class _ChessBoardState extends State<ChessBoard> {
 
                       colorInCheck = _engine.getColorInCheck(boardState);
                       Color? checkmateColor = _engine.getCheckmateColor(boardState, isWhiteMove);
-                      Color? stalemateColor = _engine.getDrawColor(boardState, isWhiteMove);
+                      Color? stalemateColor = _engine.getStalemateColor(boardState, isWhiteMove);
 
                       if (colorInCheck != null && checkmateColor == null) {
                         playAudio("audio/check.mp3");
@@ -173,12 +173,8 @@ class _ChessBoardState extends State<ChessBoard> {
 
                       handleGameSounds(colorInCheck, checkmateColor, capturedPieceOrNull, stalemateColor);
 
-                      if (stalemateColor != null) {
-                        print("stalemate");
-                      }
-
-                      if (checkmateColor != null) {
-                        print(checkmateColor == Colors.white ?  " white wins" : "black wins");
+                      if (stalemateColor != null || checkmateColor != null) {
+                        _buildEndingScreen(context, stalemateColor != null, checkmateColor);
                       }
 
                       setState(() {});
@@ -195,18 +191,30 @@ class _ChessBoardState extends State<ChessBoard> {
     ),
   );
 
-  void handleGameSounds(Color? colorInCheck, Color? checkmateColor, ChessPiece? capturedPieceOrNull, Color? stalemateColor) {
-    if (checkmateColor != null) {
-      playAudio("audio/checkmate_with_check.mp3");
-    } else if (colorInCheck != null) {
-      playAudio("audio/check.mp3");
-    } else if (stalemateColor != null) {
-      playAudio("audio/game_end.mp3");
-    } else if (capturedPieceOrNull != null) {
-      playAudio("audio/capture_piece.mp3");
-    } else {
-      playAudio("audio/piece_move.mp3");
-    }
+  void _buildEndingScreen(BuildContext context, bool stalemate, Color? winningColor) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text(
+          "Game Over"
+        ),
+        content: Text(
+          stalemate 
+            ? "Stalemate"
+            : (winningColor == Colors.white ? 'White wins' : 'Black wins'),
+        ),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text(
+              'OK'
+            ),
+          ),
+        ],
+      ),    
+    );
   }
 
   void tryCapturePiece(ChessPiece? capturedPiece) {
@@ -284,6 +292,20 @@ class _ChessBoardState extends State<ChessBoard> {
         return Image.asset('images/king_$pieceColor.png', width: 50, height: 50);
       default:
         return Image.asset('', width: 50, height: 50);
+    }
+  }
+
+  void handleGameSounds(Color? colorInCheck, Color? checkmateColor, ChessPiece? capturedPieceOrNull, Color? stalemateColor) {
+    if (checkmateColor != null) {
+      playAudio("audio/checkmate_with_check.mp3");
+    } else if (colorInCheck != null) {
+      playAudio("audio/check.mp3");
+    } else if (stalemateColor != null) {
+      playAudio("audio/game_end.mp3");
+    } else if (capturedPieceOrNull != null) {
+      playAudio("audio/capture_piece.mp3");
+    } else {
+      playAudio("audio/piece_move.mp3");
     }
   }
 

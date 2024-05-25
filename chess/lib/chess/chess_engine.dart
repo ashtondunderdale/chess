@@ -136,7 +136,7 @@ class ChessEngine {
     return copiedBoardState;
   }
 
-  Color? getDrawColor(List<List<ChessPiece?>> boardState, bool isWhiteMove) {
+  Color? getStalemateColor(List<List<ChessPiece?>> boardState, bool isWhiteMove) {
   Color currentPlayerColor = isWhiteMove ? Colors.white : Colors.black;
 
   if (getColorInCheck(boardState) == currentPlayerColor) {
